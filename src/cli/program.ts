@@ -83,7 +83,14 @@ async function buildInput(
   const input: Record<string, unknown> = {};
   spec.positionals.forEach((pos, i) => {
     const v = args[i];
-    if (v !== undefined) input[pos.field] = v;
+    if (v === undefined) return;
+    if (pos.type === "number") {
+      const n = Number(v);
+      if (typeof v !== "string" || v.trim() === "" || !Number.isFinite(n)) {
+        throw new OrctlError("USAGE", `<${pos.name}> expects a number, got "${String(v)}".`);
+      }
+      input[pos.field] = n;
+    } else input[pos.field] = v;
   });
   const local = cmd.opts() as Record<string, unknown>;
   const global = rootOf(cmd).opts() as Record<string, unknown>;
@@ -200,6 +207,8 @@ export function buildProgram(deps: CliDeps, setExit: (code: number) => void, hoo
     providers: "Inference providers (no key needed)",
     keys: "Manage API keys (management key)",
     usage: "Spending breakdown (management key)",
+    workspaces: "Workspaces, budgets and members (management key)",
+    budget: "Workspace budgets",
   };
   for (const spec of SPECS) {
     const sameParent = (p: readonly string[]) =>
@@ -217,10 +226,14 @@ export function buildProgram(deps: CliDeps, setExit: (code: number) => void, hoo
     for (const path of aliases.filter((a) => !sameParent(a)))
       registerSpec(program, spec, path, deps, action, setExit, []);
   }
-  for (const cmd of program.commands) {
-    const description = groups[cmd.name()];
-    if (description && !cmd.description()) cmd.description(description);
-  }
+  const describeGroups = (parent: Command) => {
+    for (const cmd of parent.commands) {
+      const description = groups[cmd.name()];
+      if (description && !cmd.description()) cmd.description(description);
+      describeGroups(cmd);
+    }
+  };
+  describeGroups(program);
 
   program
     .command("tui")

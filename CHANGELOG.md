@@ -42,4 +42,8 @@
   `--since/--until` (30-day limit enforced), `--key`, `--workspace`, totals, share, spend bars and
   CSV; `--by key` uses the per-key counters and says so. TUI Usage screen (breakdown tabs, date
   window) and a "top models, last 7 days" dashboard card.
+- F8: `workspaces list|show|create|update|rm|members` and `workspaces budget list|set|rm`
+  (daily/weekly/monthly/lifetime, BYOK toggle); typed-slug deletion, the default workspace is never
+  deleted, membership stays read-only; TUI Workspaces list and detail (Budgets / Members / Keys
+  tabs, budget and workspace forms).
 

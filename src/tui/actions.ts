@@ -42,4 +42,23 @@ export const TUI_ACTIONS: TuiAction[] = [
     key: "tab / [ ]",
     label: "Usage by model, provider, day, workspace, key",
   },
+  { op: "workspaces.list", screen: "workspaces", label: "List workspaces" },
+  { op: "workspaces.show", screen: "workspaces", key: "enter", label: "Workspace details" },
+  { op: "workspaces.create", screen: "workspaces", key: "n", label: "Create a workspace" },
+  { op: "workspaces.update", screen: "workspaces", key: "enter → e", label: "Edit a workspace" },
+  {
+    op: "workspaces.delete",
+    screen: "workspaces",
+    key: "enter → D",
+    label: "Delete a workspace (typed slug)",
+  },
+  {
+    op: "workspaces.members",
+    screen: "workspaces",
+    key: "enter → Members",
+    label: "Workspace members (read-only)",
+  },
+  { op: "budgets.list", screen: "workspaces", key: "enter → Budgets", label: "Workspace budgets" },
+  { op: "budgets.set", screen: "workspaces", key: "Budgets → n / e", label: "Set a workspace budget" },
+  { op: "budgets.delete", screen: "workspaces", key: "Budgets → D", label: "Remove a workspace budget" },
 ];
