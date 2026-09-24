@@ -192,6 +192,7 @@ export function buildProgram(deps: CliDeps, setExit: (code: number) => void, hoo
     auth: "Identity and diagnostics",
     models: "Browse models and prices (no key needed)",
     providers: "Inference providers (no key needed)",
+    keys: "Manage API keys (management key)",
   };
   for (const spec of SPECS) {
     const sameParent = (p: readonly string[]) =>

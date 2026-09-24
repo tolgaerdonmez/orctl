@@ -5,6 +5,7 @@ import { Confirm } from "./components/dialogs.tsx";
 import { Footer, Header, Tabs, Toasts } from "./components/Shell.tsx";
 import { DashboardScreen } from "./screens/Dashboard.tsx";
 import { HelpScreen } from "./screens/Help.tsx";
+import { KeyDetailScreen, KeysScreen } from "./screens/Keys.tsx";
 import { ModelDetailScreen } from "./screens/ModelDetail.tsx";
 import { ModelsScreen } from "./screens/Models.tsx";
 import { Palette, Placeholder, ProfileSwitcher } from "./screens/overlays.tsx";
@@ -29,6 +30,8 @@ export const SCREENS: Record<string, ScreenComponent> = {
   models: () => <ModelsScreen />,
   "model-detail": ({ screen }) => <ModelDetailScreen id={String(screen.params?.id ?? "")} />,
   providers: () => <ProvidersScreen />,
+  keys: () => <KeysScreen />,
+  "key-detail": ({ screen }) => <KeyDetailScreen hash={String(screen.params?.hash ?? "")} />,
 };
 
 function GlobalKeys() {

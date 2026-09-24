@@ -56,4 +56,7 @@ export const PARITY_SAMPLES: Record<string, Array<Record<string, unknown>>> = {
   "models.endpoints": [{ id: "openai/gpt-6-luna-pro" }, { id: "openai/gpt-6-luna", sort: "uptime" }],
   "providers.list": [{}, { q: "open ai" }],
   "providers.show": [{ slug: "cerebras" }],
+  "keys.list": [{}, { workspace: "research", includeDisabled: true, sort: "usage", strict: true }],
+  "keys.show": [{ ref: "ci-bot" }, { ref: "…1c96", workspace: "default" }],
+  "credits.get": [{}],
 };

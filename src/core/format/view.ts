@@ -22,7 +22,8 @@ export const plainStyle: Style = {
 export interface TableView<O, R> {
   kind: "table";
   rows(output: O): R[];
-  columns: readonly Column<R>[];
+  /** Static columns, or a factory when values depend on the current time (e.g. "expires in"). */
+  columns: readonly Column<R>[] | ((now: Date) => readonly Column<R>[]);
   /** Lines printed above the table (e.g. a data-source note). */
   header?(output: O, style: Style, now: Date): string[];
   footer?(output: O, style: Style, now: Date): string[];
@@ -39,6 +40,10 @@ export type View = TableView<any, any> | LinesView<any>;
 
 export function table<O, R>(view: Omit<TableView<O, R>, "kind">): TableView<O, R> {
   return { kind: "table", ...view };
+}
+
+export function columnsOf<R>(view: TableView<unknown, R>, now: Date): readonly Column<R>[] {
+  return typeof view.columns === "function" ? view.columns(now) : view.columns;
 }
 
 export function lines<O>(fn: LinesView<O>["lines"]): LinesView<O> {
