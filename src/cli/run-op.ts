@@ -2,7 +2,7 @@ import { mapError } from "../core/client/map-error.ts";
 import { createContext } from "../core/context.ts";
 import { ExitCode, OrctlError } from "../core/errors.ts";
 import { ColumnError, selectColumns } from "../core/format/columns.ts";
-import type { View } from "../core/format/view.ts";
+import { columnsOf, type View } from "../core/format/view.ts";
 import { viewFor } from "../core/format/views.ts";
 import { messages } from "../core/messages.ts";
 import { getOp } from "../core/ops/registry.ts";
@@ -67,7 +67,7 @@ function renderView(
   }
   let columns: ReturnType<typeof selectColumns>;
   try {
-    columns = selectColumns(view.columns, globals.columns);
+    columns = selectColumns(columnsOf(view, now), globals.columns);
   } catch (err) {
     if (err instanceof ColumnError) throw new OrctlError("USAGE", err.message);
     throw err;

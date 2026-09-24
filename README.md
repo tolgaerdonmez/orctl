@@ -133,6 +133,19 @@ Profile selection order: `--profile/-p` → `ORCTL_PROFILE` → an ephemeral `en
 only profile. `OPENROUTER_API_KEY` is deliberately ignored; bind it explicitly with
 `--user-key-ref env:OPENROUTER_API_KEY` if you want it.
 
+## Keys and credits
+
+```sh
+orctl keys list                         # every workspace (GET /keys alone only shows the default one)
+orctl keys list --workspace research --include-disabled --sort usage
+orctl keys show ci-bot                  # hash, hash prefix (≥6 hex), exact name, or …1c96 label suffix
+orctl credits                           # purchased, used, left
+```
+
+Ambiguous references (two keys named `ci-bot` in different workspaces) exit with code 2 and list
+the candidates; add `--workspace` or use a hash prefix. If one workspace fails, the list is still
+printed with a warning; `--strict` turns that into exit code 11.
+
 ## Models and prices
 
 No key is needed for the public catalog. Prices are shown in USD per million tokens, computed

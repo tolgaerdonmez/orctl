@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { serveKeys } from "./fixtures/keys.ts";
 import type { Harness } from "./helpers.ts";
 
 const fixture = (name: string) =>
@@ -17,10 +18,14 @@ export const LEAK_COMMANDS: string[][] = [
   ["models", "endpoints", "openai/gpt-6-luna-pro"],
   ["providers", "list"],
   ["providers", "show", "openai"],
+  ["keys", "list", "--include-disabled"],
+  ["keys", "show", "laptop"],
+  ["credits"],
 ];
 
 /** Extra fake routes needed by LEAK_COMMANDS beyond the profile basics. */
 export function registerLeakFixtures(h: Harness): void {
+  serveKeys(h.fetcher);
   h.fetcher
     .get("/models", fixture("models.json"))
     .get("/providers", fixture("providers.json"))

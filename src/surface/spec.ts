@@ -374,7 +374,63 @@ export const MODEL_SPECS: CommandSpec[] = [
   },
 ];
 
-export const SPECS: readonly CommandSpec[] = [...PROFILE_SPECS, ...AUTH_SPECS, ...MODEL_SPECS];
+const workspaceFlag: FlagSpec = {
+  field: "workspace",
+  flags: "--workspace <ref>",
+  description: "workspace id, slug or name",
+  type: "string",
+};
+
+export const KEY_READ_SPECS: CommandSpec[] = [
+  {
+    op: "keys.list",
+    path: ["keys", "list"],
+    aliases: [["keys", "ls"]],
+    description: "List API keys across all workspaces",
+    positionals: [],
+    flags: [
+      { ...workspaceFlag, description: "only this workspace (default: all workspaces)" },
+      {
+        field: "includeDisabled",
+        flags: "--include-disabled",
+        description: "include disabled keys",
+        type: "boolean",
+      },
+      {
+        field: "sort",
+        flags: "--sort <key>",
+        description: "workspace | name | usage | created | expires",
+        type: "string",
+        choices: ["workspace", "name", "usage", "created", "expires"],
+      },
+      { field: "strict", flags: "--strict", description: "exit 11 if any workspace failed", type: "boolean" },
+    ],
+    list: true,
+  },
+  {
+    op: "keys.show",
+    path: ["keys", "show"],
+    description: "Show one API key",
+    positionals: [
+      { field: "ref", name: "ref", required: true, description: "hash, hash prefix, name or …label" },
+    ],
+    flags: [{ ...workspaceFlag, description: "look only in this workspace" }],
+  },
+  {
+    op: "credits.get",
+    path: ["credits"],
+    description: "Show purchased credits, usage and what is left",
+    positionals: [],
+    flags: [],
+  },
+];
+
+export const SPECS: readonly CommandSpec[] = [
+  ...PROFILE_SPECS,
+  ...AUTH_SPECS,
+  ...MODEL_SPECS,
+  ...KEY_READ_SPECS,
+];
 
 export function specFor(op: string): CommandSpec | undefined {
   return SPECS.find((s) => s.op === op);

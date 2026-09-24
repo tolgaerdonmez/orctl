@@ -57,6 +57,10 @@ export const SCREEN_BINDINGS: Binding[] = [
   { key: "enter", label: "model details", scope: "models" },
   { key: "tab ←→", label: "detail tabs", scope: "models" },
   { key: "/", label: "search", scope: "providers" },
+  { key: "tab", label: "cycle workspace", scope: "keys" },
+  { key: "x", label: "show/hide disabled", scope: "keys" },
+  { key: "/", label: "filter", scope: "keys" },
+  { key: "enter", label: "key details", scope: "keys" },
 ];
 
 export function bindingsFor(scope: string): Binding[] {

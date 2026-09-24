@@ -27,4 +27,7 @@ export const TUI_ACTIONS: TuiAction[] = [
   { op: "models.endpoints", screen: "models", key: "enter → tab", label: "Model endpoints per provider" },
   { op: "providers.list", screen: "providers", label: "List providers" },
   { op: "providers.show", screen: "providers", key: "enter", label: "Provider details" },
+  { op: "keys.list", screen: "keys", key: "tab / x", label: "List keys (workspace filter, disabled)" },
+  { op: "keys.show", screen: "keys", key: "enter", label: "Key details" },
+  { op: "credits.get", screen: "dashboard", label: "Credits card" },
 ];

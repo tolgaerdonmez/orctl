@@ -20,3 +20,8 @@
   uptime, latency, throughput), `providers list|show`; exact bigint $/M pricing with free,
   variable and tiered flags; `--refresh` / `--offline`; TUI Models (search, filters, sort,
   fetched-at), ModelDetail (Overview / Pricing / Endpoints) and Providers screens.
+- F4: `keys list` walks every workspace (offset pagination, dedupe, partial-failure warnings,
+  `--strict` → exit 11, default-workspace fallback), key references (hash, hash prefix, name,
+  `…label`, ambiguity lists candidates), `keys show`, `credits`; TUI Keys screen (workspace
+  cycling, disabled toggle, detail panel), key detail and a Dashboard with credits, keys expiring
+  within 14 days and keys above 80% of their limit.
