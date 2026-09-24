@@ -1,4 +1,5 @@
 import { authDoctor, authWhoami } from "./auth.ts";
+import { modelsEndpoints, modelsList, modelsShow } from "./models.ts";
 import {
   profileAdd,
   profileList,
@@ -8,6 +9,7 @@ import {
   profileShow,
   profileUse,
 } from "./profile.ts";
+import { providersList, providersShow } from "./providers.ts";
 import type { AnyOperation, OpId } from "./types.ts";
 
 /** Every operation orctl exposes; the CLI spec and the TUI actions are both checked against it. */
@@ -21,6 +23,11 @@ export const OPERATIONS: readonly AnyOperation[] = [
   profileRemove,
   authWhoami,
   authDoctor,
+  modelsList,
+  modelsShow,
+  modelsEndpoints,
+  providersList,
+  providersShow,
 ];
 
 const byId = new Map<string, AnyOperation>(OPERATIONS.map((op) => [op.id, op]));

@@ -1,4 +1,5 @@
 import { type Fetcher, HTTPClient, OpenRouter } from "@openrouter/sdk";
+import type { RetryConfig } from "@openrouter/sdk/lib/retries.js";
 import type { RequestOptions } from "@openrouter/sdk/lib/sdks.js";
 import type { RedactingLogger } from "../logger.ts";
 import { OPENROUTER_API_URL, USER_AGENT } from "../version.ts";
@@ -18,6 +19,8 @@ export interface ClientOptions {
   timeoutMs: number;
   log: RedactingLogger;
   rateLimit: RateLimitInfo;
+  /** Overrides READ_RETRY (tests use no retries to stay fast). */
+  retryConfig?: RetryConfig | undefined;
 }
 
 /** Reads retry briefly; the SDK default for some calls retries for up to an hour. */
@@ -75,7 +78,7 @@ export function createClient(
     apiKey,
     httpClient,
     serverURL: OPENROUTER_API_URL,
-    retryConfig: READ_RETRY,
+    retryConfig: options.retryConfig ?? READ_RETRY,
     timeoutMs: options.timeoutMs,
     debugLogger: options.log,
   });

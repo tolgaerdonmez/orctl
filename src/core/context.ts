@@ -1,5 +1,7 @@
 import { homedir } from "node:os";
 import type { Fetcher, OpenRouter } from "@openrouter/sdk";
+import type { RetryConfig } from "@openrouter/sdk/lib/retries.js";
+import { DiskCache } from "./cache/disk-cache.ts";
 import { type ApiRole, createClient, type RateLimitInfo } from "./client/factory.ts";
 import { type Clipboard, createSystemClipboard } from "./clipboard.ts";
 import { OrctlError } from "./errors.ts";
@@ -31,6 +33,8 @@ export interface RuntimeDeps {
   clipboard?: Clipboard | undefined;
   /** Where --debug lines go (stderr in the CLI). */
   debugSink?: LineSink | undefined;
+  /** Read retry policy override (tests). */
+  retryConfig?: RetryConfig | undefined;
 }
 
 export interface RunOptions {
@@ -84,7 +88,7 @@ export async function createContext(deps: RuntimeDeps, options: RunOptions = {})
   );
   const timeoutMs = Math.round((options.timeoutSeconds ?? DEFAULT_TIMEOUT_SECONDS) * 1000);
   const rateLimit: RateLimitInfo = {};
-  const clientOptions = { fetcher: deps.fetcher, timeoutMs, log, rateLimit };
+  const clientOptions = { fetcher: deps.fetcher, timeoutMs, log, rateLimit, retryConfig: deps.retryConfig };
 
   const clients = new Map<ApiRole, OpenRouter>();
   const keyedClient = (role: "user" | "management"): OpenRouter => {
@@ -118,6 +122,7 @@ export async function createContext(deps: RuntimeDeps, options: RunOptions = {})
     deps.clipboard ??
     createSystemClipboard(deps.runProcess ?? bunProcessRunner, platform, deps.which ?? bunWhich);
 
+  const clock = deps.clock ?? systemClock;
   return {
     env,
     home,
@@ -129,7 +134,8 @@ export async function createContext(deps: RuntimeDeps, options: RunOptions = {})
     sdk,
     secrets,
     clipboard,
-    clock: deps.clock ?? systemClock,
+    cache: new DiskCache(paths.cacheDir, clock),
+    clock,
     log,
     limiter: createLimiter(4),
     cachePolicy: options.cachePolicy ?? "default",

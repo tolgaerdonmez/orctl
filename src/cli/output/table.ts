@@ -20,7 +20,9 @@ export function renderTable<R>(
     const line = layout.columns
       .map((c, i) => {
         const w = layout.widths[i] ?? 0;
-        const text = padText(truncateText(layout.cells[r]?.[i] ?? "", w), w, c.align);
+        const last = i === layout.columns.length - 1 && c.align !== "right";
+        const cell = truncateText(layout.cells[r]?.[i] ?? "", w);
+        const text = last ? cell : padText(cell, w, c.align);
         const tone = c.tone?.(row);
         return tone ? s.tone(tone, text) : text;
       })

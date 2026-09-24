@@ -233,7 +233,148 @@ export const AUTH_SPECS: CommandSpec[] = [
   },
 ];
 
-export const SPECS: readonly CommandSpec[] = [...PROFILE_SPECS, ...AUTH_SPECS];
+export const MODEL_SORT_CHOICES = [
+  "price",
+  "price-desc",
+  "output-price",
+  "context",
+  "newest",
+  "name",
+  "popular",
+  "top-weekly",
+  "throughput",
+  "latency",
+  "intelligence",
+  "coding",
+  "agentic",
+] as const;
+
+export const MODEL_SPECS: CommandSpec[] = [
+  {
+    op: "models.list",
+    path: ["models", "list"],
+    aliases: [["models", "ls"]],
+    description: "Search models with prices in $ per million tokens (no key needed)",
+    positionals: [],
+    flags: [
+      { field: "q", flags: "--q <text>", description: "search id and name", type: "string" },
+      {
+        field: "sort",
+        flags: "--sort <key>",
+        description: "sort order",
+        type: "string",
+        choices: MODEL_SORT_CHOICES,
+      },
+      { field: "maxPrice", flags: "--max-price <usd>", description: "max input $/M", type: "number" },
+      { field: "minPrice", flags: "--min-price <usd>", description: "min input $/M", type: "number" },
+      {
+        field: "maxOutputPrice",
+        flags: "--max-output-price <usd>",
+        description: "max output $/M",
+        type: "number",
+      },
+      {
+        field: "minContext",
+        flags: "--min-context <tokens>",
+        description: "minimum context length",
+        type: "number",
+      },
+      {
+        field: "modality",
+        flags: "--modality <m>",
+        description: "text, image, audio, file… (input or output)",
+        type: "string",
+      },
+      {
+        field: "author",
+        flags: "--author <author>",
+        description: "model author, e.g. anthropic",
+        type: "string",
+      },
+      { field: "free", flags: "--free", description: "only free models", type: "boolean" },
+      {
+        field: "param",
+        flags: "--param <names>",
+        description: "required parameters, e.g. tools,reasoning",
+        type: "string",
+      },
+      {
+        field: "zdr",
+        flags: "--zdr",
+        description: "zero-data-retention endpoints only (server-side)",
+        type: "boolean",
+      },
+      {
+        field: "region",
+        flags: "--region <region>",
+        description: "eu or us (server-side)",
+        type: "string",
+        choices: ["eu", "us"],
+      },
+      {
+        field: "provider",
+        flags: "--provider <slug>",
+        description: "served by this provider (server-side)",
+        type: "string",
+      },
+      { field: "limit", flags: "--limit <n>", description: "show at most n rows", type: "number" },
+    ],
+    list: true,
+    cached: true,
+    examples: [
+      "orctl models list --q claude --sort price",
+      "orctl models list --max-price 1 --param tools --min-context 200000",
+      "orctl models list --free --json",
+    ],
+  },
+  {
+    op: "models.show",
+    path: ["models", "show"],
+    description: "Show a model: pricing tiers, context, reasoning, parameters",
+    positionals: [
+      { field: "id", name: "author/slug", required: true, description: "model id, e.g. openai/gpt-6-luna" },
+    ],
+    flags: [],
+    cached: true,
+  },
+  {
+    op: "models.endpoints",
+    path: ["models", "endpoints"],
+    description: "Per-provider prices, uptime, latency and throughput",
+    positionals: [{ field: "id", name: "author/slug", required: true, description: "model id" }],
+    flags: [
+      {
+        field: "sort",
+        flags: "--sort <key>",
+        description: "price | uptime | latency | throughput",
+        type: "string",
+        choices: ["price", "uptime", "latency", "throughput"],
+      },
+    ],
+    list: true,
+    cached: true,
+  },
+  {
+    op: "providers.list",
+    path: ["providers", "list"],
+    aliases: [["providers", "ls"]],
+    description: "List inference providers",
+    positionals: [],
+    flags: [{ field: "q", flags: "--q <text>", description: "search name and slug", type: "string" }],
+    list: true,
+    cached: true,
+  },
+  {
+    op: "providers.show",
+    path: ["providers", "show"],
+    description: "Show a provider's headquarters, datacenters and policies",
+    positionals: [{ field: "slug", name: "slug", required: true, description: "provider slug" }],
+    flags: [],
+    cached: true,
+  },
+];
+
+export const SPECS: readonly CommandSpec[] = [...PROFILE_SPECS, ...AUTH_SPECS, ...MODEL_SPECS];
 
 export function specFor(op: string): CommandSpec | undefined {
   return SPECS.find((s) => s.op === op);

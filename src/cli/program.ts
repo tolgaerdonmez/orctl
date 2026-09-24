@@ -190,6 +190,8 @@ export function buildProgram(deps: CliDeps, setExit: (code: number) => void, hoo
   const groups: Record<string, string> = {
     profile: "Manage profiles (one per OpenRouter account)",
     auth: "Identity and diagnostics",
+    models: "Browse models and prices (no key needed)",
+    providers: "Inference providers (no key needed)",
   };
   for (const spec of SPECS) {
     const sameParent = (p: readonly string[]) =>

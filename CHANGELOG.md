@@ -14,3 +14,9 @@
   wizard (masked key entry, server verification), typed-name confirmation for removal. `orctl`
   alone opens the TUI on a terminal; `orctl tui <screen>` deep-links. Nix flake builds the
   compiled binary (`nix build`, `nix run`).
+- F3: public model and provider catalog without any key: `models list` (instant local filters on
+  a 10-minute cached full list; zdr/region/provider and popularity/benchmark sorts go to the
+  API), `models show` (pricing tiers, reasoning, context), `models endpoints` (per-provider price,
+  uptime, latency, throughput), `providers list|show`; exact bigint $/M pricing with free,
+  variable and tiered flags; `--refresh` / `--offline`; TUI Models (search, filters, sort,
+  fetched-at), ModelDetail (Overview / Pricing / Endpoints) and Providers screens.

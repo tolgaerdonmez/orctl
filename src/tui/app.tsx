@@ -5,9 +5,12 @@ import { Confirm } from "./components/dialogs.tsx";
 import { Footer, Header, Tabs, Toasts } from "./components/Shell.tsx";
 import { DashboardScreen } from "./screens/Dashboard.tsx";
 import { HelpScreen } from "./screens/Help.tsx";
+import { ModelDetailScreen } from "./screens/ModelDetail.tsx";
+import { ModelsScreen } from "./screens/Models.tsx";
 import { Palette, Placeholder, ProfileSwitcher } from "./screens/overlays.tsx";
 import { ProfilesScreen } from "./screens/Profiles.tsx";
 import { ProfileWizard } from "./screens/ProfileWizard.tsx";
+import { ProvidersScreen } from "./screens/Providers.tsx";
 import { Layer, type Screen, TABS, type TuiOptions, TuiProvider, useKeys, useTui } from "./state.tsx";
 
 type ScreenComponent = FunctionComponent<{ screen: Screen }>;
@@ -23,6 +26,9 @@ export const SCREENS: Record<string, ScreenComponent> = {
     />
   ),
   help: () => <HelpScreen />,
+  models: () => <ModelsScreen />,
+  "model-detail": ({ screen }) => <ModelDetailScreen id={String(screen.params?.id ?? "")} />,
+  providers: () => <ProvidersScreen />,
 };
 
 function GlobalKeys() {

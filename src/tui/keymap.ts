@@ -50,6 +50,13 @@ export const SCREEN_BINDINGS: Binding[] = [
   { key: "D", label: "remove profile", scope: "profiles" },
   { key: "v", label: "verify profiles", scope: "profiles" },
   { key: "w", label: "refresh whoami", scope: "dashboard" },
+  { key: "/", label: "search", scope: "models" },
+  { key: "f", label: "filters", scope: "models" },
+  { key: "s", label: "cycle sort", scope: "models" },
+  { key: "x", label: "clear filters", scope: "models" },
+  { key: "enter", label: "model details", scope: "models" },
+  { key: "tab ←→", label: "detail tabs", scope: "models" },
+  { key: "/", label: "search", scope: "providers" },
 ];
 
 export function bindingsFor(scope: string): Binding[] {

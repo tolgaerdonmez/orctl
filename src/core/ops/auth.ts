@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { mapError } from "../client/map-error.ts";
 import { ExitCode, OrctlError } from "../errors.ts";
+import { relativeTime } from "../format/time.ts";
 import { fileMode, formatMode } from "../fs-util.ts";
 import { messages } from "../messages.ts";
 import { withTimeout } from "../runtime.ts";
@@ -92,11 +93,18 @@ export interface DoctorCheck {
   exit?: number | undefined;
 }
 
-/** Extra checks contributed by later features (cache, rotation journals); read-only by contract. */
-export type DoctorContributor = (ctx: Ctx, input: { offline: boolean }) => Promise<DoctorCheck[]>;
-const contributors: DoctorContributor[] = [];
-export function registerDoctorCheck(fn: DoctorContributor): void {
-  contributors.push(fn);
+async function cacheChecks(ctx: Ctx): Promise<DoctorCheck[]> {
+  const stats = await ctx.cache.stats();
+  if (stats.files === 0) return [{ id: "cache", status: "ok", message: `Cache empty (${ctx.cache.dir}).` }];
+  const kb = Math.round(stats.bytes / 1024);
+  const age = stats.oldest ? relativeTime(stats.oldest, ctx.clock.now()) : "unknown";
+  return [
+    {
+      id: "cache",
+      status: "ok",
+      message: `Cache ${ctx.cache.dir}: ${stats.files} files, ${kb} KB, oldest ${age} (public data only).`,
+    },
+  ];
 }
 
 async function fileChecks(ctx: Ctx): Promise<DoctorCheck[]> {
@@ -256,7 +264,7 @@ export const authDoctor = defineOp({
       ...envChecks(ctx),
       ...(await networkChecks(ctx, offline)),
     ];
-    for (const contribute of contributors) checks.push(...(await contribute(ctx, { offline })));
+    checks.push(...(await cacheChecks(ctx)));
     const failed = checks.find((c) => c.status === "fail");
     if (failed) ctx.meta.exit = failed.exit ?? ExitCode.UNEXPECTED;
     return {
