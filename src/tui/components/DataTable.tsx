@@ -36,7 +36,9 @@ export function DataTable<R>(props: {
   const gap = " ".repeat(COLUMN_GAP);
   return (
     <box flexDirection="column" height={height}>
-      <text fg={theme.muted}>{formatHeader(layout)}</text>
+      <text fg={theme.muted} wrapMode="none">
+        {formatHeader(layout)}
+      </text>
       {rows.slice(start, start + visible).map((row, i) => {
         const index = start + i;
         const isSelected = index === selected;
@@ -50,7 +52,7 @@ export function DataTable<R>(props: {
         });
         const used = cells.reduce((n, c) => n + Bun.stringWidth(c.text), 0) + gap.length * (cells.length - 1);
         return (
-          <text key={key} bg={isSelected ? theme.selectionBg : undefined}>
+          <text key={key} bg={isSelected ? theme.selectionBg : undefined} wrapMode="none">
             {cells.map((c, ci) => (
               <span
                 key={layout.columns[ci]?.id ?? ci}

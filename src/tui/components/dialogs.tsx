@@ -18,7 +18,7 @@ export function ConfirmTyped(props: {
   const { closeModal } = useTui();
   const [mismatch, setMismatch] = useState(false);
   return (
-    <Modal title={props.title} onClose={closeModal} borderColor={theme.bad} height={10}>
+    <Modal title={props.title} onClose={closeModal} borderColor={theme.bad} height={10} width={90}>
       <text fg={theme.fg}>{props.prompt}</text>
       {props.extra ? <text fg={theme.muted}>{props.extra}</text> : null}
       <text fg={theme.muted}>{`Type "${props.typed}" and press enter (esc cancels):`}</text>
@@ -43,7 +43,7 @@ export function ConfirmTyped(props: {
 export function Confirm(props: { title: string; prompt: string; onConfirm(): void }) {
   const { closeModal } = useTui();
   return (
-    <Modal title={props.title} onClose={closeModal} height={6}>
+    <Modal title={props.title} onClose={closeModal} height={7} width={90}>
       <text fg={theme.fg}>{props.prompt}</text>
       <text fg={theme.muted}>y confirm · esc cancel</text>
       <ConfirmKeys

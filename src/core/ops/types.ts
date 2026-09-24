@@ -61,6 +61,8 @@ export interface Ctx {
   readonly clipboard: Clipboard;
   /** Public data only (models, providers, endpoints); never account data (plan K19). */
   readonly cache: DiskCache;
+  /** Adapter hook for a key that could be neither delivered nor deleted again (plan §8.1). */
+  readonly emergencyReveal?: ((secret: Secret, message: string) => Promise<void>) | undefined;
   readonly clock: Clock;
   readonly log: RedactingLogger;
   readonly limiter: Limiter;

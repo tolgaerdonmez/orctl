@@ -142,6 +142,22 @@ orctl keys show ci-bot                  # hash, hash prefix (≥6 hex), exact na
 orctl credits                           # purchased, used, left
 ```
 
+Creating and changing keys:
+
+```sh
+orctl keys create ci-bot --limit 50 --reset monthly --expires 90d --store    # → Keychain
+orctl keys create scratch --limit 1 --expires 1d --show --json | jq -r .data.key
+orctl keys create laptop --copy                                            # clipboard, cleared after 45 s
+orctl keys update ci-bot --limit none --rename ci
+orctl keys disable ci-bot && orctl keys enable ci-bot
+orctl keys rm ci-bot                                                       # type the name to confirm
+```
+
+A new key's plaintext is returned by OpenRouter exactly once, so `keys create` needs to know where
+it goes (`--store`, `--show` or `--copy`; asked on a terminal). If storing fails, the new key is
+deleted again. If the request fails on the network, orctl checks whether the key was created
+anyway and tells you how to delete that orphan (exit 12).
+
 Ambiguous references (two keys named `ci-bot` in different workspaces) exit with code 2 and list
 the candidates; add `--workspace` or use a hash prefix. If one workspace fails, the list is still
 printed with a warning; `--strict` turns that into exit code 11.

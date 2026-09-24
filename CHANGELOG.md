@@ -25,3 +25,9 @@
   `…label`, ambiguity lists candidates), `keys show`, `credits`; TUI Keys screen (workspace
   cycling, disabled toggle, detail panel), key detail and a Dashboard with credits, keys expiring
   within 14 days and keys above 80% of their limit.
+- F5: `keys create` with exactly-once delivery (`--store [keychain:…]`, `--show`, `--copy`; asked
+  on a terminal, required otherwise), second-precision `--expires` (ISO, date or 30d), automatic
+  rollback when delivery fails, orphan detection when the outcome is unknown (exit 12);
+  `keys update` (rename, `--limit none`, reset, BYOK), `keys disable|enable`, `keys rm` with typed
+  confirmation; TUI key form, one-time SecretReveal dialog (copy / store / warn before closing),
+  space to enable/disable, D to delete.

@@ -7,19 +7,18 @@ import { DataTable, listKeys } from "../components/DataTable.tsx";
 import { FilterBar } from "../components/FilterBar.tsx";
 import { Panel } from "../components/Shell.tsx";
 import { useOp } from "../data.ts";
-import { type KeyHandler, useCliHint, useKeys, useTui } from "../state.tsx";
+import { useCliHint, useKeys, useTui } from "../state.tsx";
 import { theme } from "../theme.ts";
+import { keyAction } from "./key-actions.tsx";
 
 export type KeysResult = { keys: KeyItem[]; workspaces: number; partial: string[] };
 
 /**
  * Keys (plan §7.3, §8.2): every workspace is listed; `tab` filters by workspace client-side so it
  * is instant, `x` toggles disabled keys, `/` filters by name or label. The right panel shows the
- * selected key. `extraKeys` lets later phases add actions without forking this screen.
+ * selected key; n/e/space/D act on it (key-actions.tsx).
  */
-export function KeysScreen(props: {
-  extraKeys?: (key: KeyItem | undefined, refresh: () => void) => KeyHandler;
-}) {
+export function KeysScreen() {
   const tui = useTui();
   const dims = useTerminalDimensions();
   const [showDisabled, setShowDisabled] = useState(false);
@@ -44,10 +43,9 @@ export function KeysScreen(props: {
     ...(showDisabled ? { includeDisabled: true } : {}),
   });
 
-  const extra = props.extraKeys?.(current, () => void list.refetch());
   useKeys(
-    (id, key) => {
-      if (extra?.(id, key)) return true;
+    (id) => {
+      if (keyAction(tui, id, current)) return true;
       if (listKeys(id, rows.length, selected, setSelected)) return true;
       switch (id) {
         case "/":
@@ -104,9 +102,7 @@ export function KeysScreen(props: {
           rowKey={(k) => k.hash}
         />
         <text fg={theme.dim}>
-          {props.extraKeys
-            ? "n new · e edit · space toggle · r rotate · D delete · enter details"
-            : "enter details"}
+          n new · e edit · space enable/disable · r rotate · D delete · enter details
         </text>
       </Panel>
       <Panel title={current?.name ?? "Key"}>
@@ -123,16 +119,11 @@ export function KeysScreen(props: {
 }
 
 /** Full-screen key detail (enter from Keys). */
-export function KeyDetailScreen(props: {
-  hash: string;
-  workspace?: string;
-  extraKeys?: (key: KeyItem) => KeyHandler;
-}) {
+export function KeyDetailScreen(props: { hash: string; workspace?: string }) {
   const tui = useTui();
   const key = useOp<KeyItem>("keys.show", { ref: props.hash });
   useCliHint("keys.show", { ref: props.hash.slice(0, 12) });
-  const extra = key.data ? props.extraKeys?.(key.data) : undefined;
-  useKeys((id, k) => Boolean(extra?.(id, k)));
+  useKeys((id) => (id === "n" ? false : keyAction(tui, id, key.data)));
   const now = tui.ctx?.clock.now() ?? new Date();
   return (
     <Panel title={key.data ? `Key ${key.data.name}` : "Key"}>
@@ -146,7 +137,7 @@ export function KeyDetailScreen(props: {
           ))
         : null}
       <text fg={theme.dim} marginTop={1}>
-        esc back
+        e edit · space enable/disable · r rotate · D delete · esc back
       </text>
     </Panel>
   );

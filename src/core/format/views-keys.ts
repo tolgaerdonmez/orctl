@@ -78,6 +78,8 @@ export function keyColumns(now: Date): Column<KeyItem>[] {
   ];
 }
 
+export { createdLines };
+
 export function keyDetailLines(k: KeyItem, s: Style, now: Date): string[] {
   const status = keyStatus(k, now);
   const rows: Array<[string, string]> = [
@@ -141,7 +143,43 @@ export function creditsLines(c: CreditsResult, s: Style): string[] {
   ];
 }
 
+interface CreatedKey {
+  apiKey: KeyItem;
+  key?: string;
+  storedAt: string | null;
+  copied: boolean;
+}
+
+function createdLines(o: CreatedKey, s: Style, now: Date, verb = "Created"): string[] {
+  const k = o.apiKey;
+  const limit =
+    k.limit === null ? "no limit" : `limit ${formatUsd(k.limit)}${k.limitReset ? ` ${k.limitReset}` : ""}`;
+  const expires = k.expiresAt ? `expires ${formatDay(k.expiresAt as Date)}` : "never expires";
+  const out = [
+    `${s.tone("good", "✔")} ${verb} key "${k.name}" (${shortLabel(k.label)}) in workspace ${k.workspaceSlug} · ${limit} · ${expires}`,
+  ];
+  if (o.storedAt) out.push(`  stored → ${o.storedAt}`);
+  if (o.copied) out.push("  copied to the clipboard (cleared in 45 s if unchanged)");
+  if (o.key) out.push(`  key (shown once): ${o.key}`);
+  void now;
+  return out;
+}
+
 export const keyViews: Record<string, View> = {
+  "keys.create": lines<CreatedKey>((o, s, now) => createdLines(o, s, now)),
+  "keys.update": lines<KeyItem>((k, s, now) => [
+    `${s.tone("good", "✔")} Updated key "${k.name}"`,
+    ...keyDetailLines(k, s, now),
+  ]),
+  "keys.disable": lines<KeyItem>((k, s) => [
+    `${s.tone("good", "✔")} Disabled key "${k.name}" (${shortLabel(k.label)}) in ${k.workspaceSlug}`,
+  ]),
+  "keys.enable": lines<KeyItem>((k, s) => [
+    `${s.tone("good", "✔")} Enabled key "${k.name}" (${shortLabel(k.label)}) in ${k.workspaceSlug}`,
+  ]),
+  "keys.delete": lines<{ name: string; label: string; workspace: string }>((o, s) => [
+    `${s.tone("good", "✔")} Deleted key "${o.name}" (${shortLabel(o.label)}) from workspace ${o.workspace}`,
+  ]),
   "keys.list": table<{ keys: KeyItem[]; workspaces: number; partial: string[] }, KeyItem>({
     rows: (o) => o.keys,
     columns: keyColumns,

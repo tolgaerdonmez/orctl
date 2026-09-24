@@ -35,6 +35,11 @@ export interface RuntimeDeps {
   debugSink?: LineSink | undefined;
   /** Read retry policy override (tests). */
   retryConfig?: RetryConfig | undefined;
+  /**
+   * Last-resort reveal of a new key when it could be neither delivered nor rolled back (plan
+   * §8.1): the CLI prints it once on a terminal, the TUI shows it in the reveal dialog.
+   */
+  emergencyReveal?: ((secret: Secret, message: string) => Promise<void>) | undefined;
 }
 
 export interface RunOptions {
@@ -135,6 +140,7 @@ export async function createContext(deps: RuntimeDeps, options: RunOptions = {})
     secrets,
     clipboard,
     cache: new DiskCache(paths.cacheDir, clock),
+    emergencyReveal: deps.emergencyReveal,
     clock,
     log,
     limiter: createLimiter(4),

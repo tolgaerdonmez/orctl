@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { KeyServer } from "./fixtures/key-server.ts";
 import { serveKeys } from "./fixtures/keys.ts";
 import type { Harness } from "./helpers.ts";
 
@@ -21,10 +22,18 @@ export const LEAK_COMMANDS: string[][] = [
   ["keys", "list", "--include-disabled"],
   ["keys", "show", "laptop"],
   ["credits"],
+  // --show prints the key by design and is excluded; every other delivery path must not.
+  ["keys", "create", "leak-store", "--store"],
+  ["keys", "create", "leak-copy", "--copy"],
+  ["keys", "update", "laptop", "--limit", "5"],
+  ["keys", "disable", "laptop"],
+  ["keys", "rm", "laptop", "--yes"],
 ];
 
 /** Extra fake routes needed by LEAK_COMMANDS beyond the profile basics. */
 export function registerLeakFixtures(h: Harness): void {
+  // KeyServer answers create/update/delete; serveKeys (registered later, so it wins) answers reads.
+  new KeyServer(h.fetcher, () => h.clock.now());
   serveKeys(h.fetcher);
   h.fetcher
     .get("/models", fixture("models.json"))
