@@ -63,7 +63,7 @@ describe("TUI Workspaces (plan §7.3, F8)", () => {
     await ui.waitFor((x) => x.includes("CLI: orctl workspaces create 'Data Team'"), "hint");
     for (let i = 0; i < 3; i++) await ui.press("ARROW_DOWN");
     await ui.enter();
-    let f = await ui.waitFor((x) => x.includes("data-team"), "created");
+    await ui.waitFor((x) => x.includes("data-team"), "created");
     expect(ws.workspaces.map((w) => w.slug)).toContain("data-team");
     await ui.press("G");
     await ui.enter();
@@ -73,7 +73,7 @@ describe("TUI Workspaces (plan §7.3, F8)", () => {
     await ui.waitFor((x) => x.includes('Type "data-team"'), "typed");
     await ui.type("data-team");
     await ui.enter();
-    f = await ui.waitFor((x) => x.includes("Deleted workspace data-team"), "deleted");
+    await ui.waitFor((x) => x.includes("Deleted workspace data-team"), "deleted");
     expect(ws.workspaces.map((w) => w.slug)).not.toContain("data-team");
   });
 });
