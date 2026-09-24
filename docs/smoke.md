@@ -46,3 +46,23 @@ Use a throwaway profile with a management key.
 4. Clean up: `orctl keys rm smoke-f6 --yes`, `orctl keys rm "smoke-f6 (rotated <date>)" --yes`, and
    the two Keychain items under service `orctl`.
 
+## Public catalog and TUI (no key needed)
+
+1. `orctl models list --q claude --sort price` lists priced models; `--offline` works right after.
+2. `orctl models show openai/gpt-6-luna-pro` shows a `⚑ ≥272K prompt tokens` tier.
+3. `orctl` opens the TUI; `3` Models, `/` search, `enter` a model, `tab` through Pricing and
+   Endpoints; `ctrl+p` palette; `q` quits and the terminal is restored with nothing left behind.
+
+## F7–F8: usage and workspaces (read-mostly)
+
+1. `orctl usage --days 7`, `orctl usage --by key`, `orctl credits` match the website's numbers.
+2. `orctl workspaces list`, `orctl workspaces show default`.
+3. Optional: `orctl workspaces create "orctl smoke"`, `orctl workspaces budget set orctl-smoke daily 1`,
+   then `orctl workspaces rm orctl-smoke`.
+
+## Install through nix-config
+
+1. In `~/nix-config`: add the flake input `orctl.url = "github:tolgaerdonmez/orctl";` and
+   `inputs.orctl.packages.${pkgs.system}.default` to `home.packages`.
+2. `nix build` the configuration, commit, `nrs`; then `orctl --version` prints 1.0.0.
+

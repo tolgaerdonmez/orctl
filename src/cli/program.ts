@@ -2,7 +2,15 @@ import { Command, CommanderError, Option } from "commander";
 import { OrctlError } from "../core/errors.ts";
 import { KEY_SHAPE, Secret } from "../core/secret.ts";
 import { ORCTL_VERSION } from "../core/version.ts";
-import { attributeName, type CommandSpec, type FlagSpec, longFlag, SPECS } from "../surface/spec.ts";
+import {
+  attributeName,
+  type CommandSpec,
+  type FlagSpec,
+  GROUP_DESCRIPTIONS,
+  longFlag,
+  SPECS,
+} from "../surface/spec.ts";
+import { zshCompletion } from "./completion.ts";
 import { completeInteractively } from "./interactive.ts";
 import type { CliDeps, GlobalOptions } from "./io.ts";
 import { runOp } from "./run-op.ts";
@@ -200,16 +208,7 @@ export function buildProgram(deps: CliDeps, setExit: (code: number) => void, hoo
       return runOp(spec, completed, globals, deps);
     });
 
-  const groups: Record<string, string> = {
-    profile: "Manage profiles (one per OpenRouter account)",
-    auth: "Identity and diagnostics",
-    models: "Browse models and prices (no key needed)",
-    providers: "Inference providers (no key needed)",
-    keys: "Manage API keys (management key)",
-    usage: "Spending breakdown (management key)",
-    workspaces: "Workspaces, budgets and members (management key)",
-    budget: "Workspace budgets",
-  };
+  const groups = GROUP_DESCRIPTIONS;
   for (const spec of SPECS) {
     const sameParent = (p: readonly string[]) =>
       p.length === spec.path.length && p.slice(0, -1).join(" ") === spec.path.slice(0, -1).join(" ");
@@ -234,6 +233,20 @@ export function buildProgram(deps: CliDeps, setExit: (code: number) => void, hoo
     }
   };
   describeGroups(program);
+
+  program
+    .command("completion")
+    .description("Print shell completion (zsh): orctl completion zsh > $fpath[1]/_orctl")
+    .argument("<shell>", "zsh")
+    .action((shell: string) => {
+      if (shell !== "zsh") {
+        deps.stderr(`✖ Only zsh completion is generated (got "${shell}").\n`);
+        setExit(2);
+        return;
+      }
+      deps.stdout(zshCompletion());
+      setExit(0);
+    });
 
   program
     .command("tui")

@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 1.0.0 (unreleased; tag after merge)
+
+The first complete version: every phase of the v1 plan (F0–F9).
 
 - F0: project skeleton, error taxonomy and exit codes, secret redaction, SDK client factory that
   closes the three SDK traps (debug logger, implicit `OPENROUTER_API_KEY`, mutation retries),
@@ -46,4 +48,7 @@
   (daily/weekly/monthly/lifetime, BYOK toggle); typed-slug deletion, the default workspace is never
   deleted, membership stays read-only; TUI Workspaces list and detail (Budgets / Members / Keys
   tabs, budget and workspace forms).
+- F9: `orctl completion zsh` generated from the command spec; `keychain:` references use the
+  Secret Service through Bun.secrets on Linux (macOS keeps /usr/bin/security); CI smoke-tests the
+  compiled binary offline; README, smoke checklist and Nix install notes completed.
 

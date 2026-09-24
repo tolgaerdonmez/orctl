@@ -737,6 +737,17 @@ export const WORKSPACE_SPECS: CommandSpec[] = [
   },
 ];
 
+/** Help text for command groups (shared by --help and shell completion). */
+export const GROUP_DESCRIPTIONS: Record<string, string> = {
+  profile: "Manage profiles (one per OpenRouter account)",
+  auth: "Identity and diagnostics",
+  models: "Browse models and prices (no key needed)",
+  providers: "Inference providers (no key needed)",
+  keys: "Manage API keys (management key)",
+  workspaces: "Workspaces, budgets and members (management key)",
+  budget: "Workspace budgets",
+};
+
 export const SPECS: readonly CommandSpec[] = [
   ...PROFILE_SPECS,
   ...AUTH_SPECS,
