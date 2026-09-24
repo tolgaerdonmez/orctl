@@ -26,3 +26,14 @@ export XDG_STATE_HOME=$PWD/.tmp/smoke/state XDG_CACHE_HOME=$PWD/.tmp/smoke/cache
 
 Optional automated Keychain check (writes and deletes a random `orctl-test-*` item):
 `ORCTL_IT_KEYCHAIN=1 bun test test/core/keychain-it.test.ts`.
+
+## F5: key mutations
+
+Use a throwaway profile with a management key.
+
+1. `orctl keys create smoke-f5 --limit 0.01 --expires 1d --store` → note the stored reference.
+2. `orctl keys show smoke-f5` shows the $0.01 limit and tomorrow's expiry.
+3. `orctl keys update smoke-f5 --rename smoke-f5b` then `orctl keys disable smoke-f5b`.
+4. `orctl keys rm smoke-f5b` (type the name) and delete the Keychain item:
+   `security delete-generic-password -s orctl -a <account from step 1>`.
+
