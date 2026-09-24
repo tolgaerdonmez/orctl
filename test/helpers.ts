@@ -50,7 +50,7 @@ export const fixedClock = (
 };
 
 export interface Harness {
-  env: Record<string, string>;
+  env: TempEnv;
   dir: string;
   fetcher: FakeFetcher;
   keychain: FakeKeychain;
@@ -68,7 +68,7 @@ export interface Harness {
 
 export function harness(opts: { env?: Record<string, string> } = {}): Harness {
   const home = tempHome();
-  const env: Record<string, string> = { ...home.env, ...opts.env };
+  const env: TempEnv = { ...home.env, ...opts.env };
   const fetcher = new FakeFetcher();
   const keychain = new FakeKeychain();
   const op = new FakeOnePassword();

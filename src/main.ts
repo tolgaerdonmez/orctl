@@ -3,7 +3,7 @@
  * Entry point (plan §4.5): `orctl <command>` runs the CLI and never loads the TUI; bare `orctl`
  * on a terminal opens the TUI through a lazy import. Only commander and core are imported here.
  */
-import { processDeps } from "./cli/io.ts";
+import { type CliDeps, processDeps } from "./cli/io.ts";
 import { runCli } from "./cli/program.ts";
 import { redact } from "./core/redact.ts";
 
@@ -19,7 +19,18 @@ function installCrashGuards(): void {
 
 async function main(argv: string[]): Promise<number> {
   installCrashGuards();
-  const deps = processDeps();
+  const base = processDeps();
+  const deps: CliDeps = {
+    ...base,
+    launchTui: async (opts) => {
+      if (!(base.stdinIsTTY && base.stdoutIsTTY)) {
+        base.stderr("✖ The TUI needs an interactive terminal; use the CLI commands instead.\n");
+        return 2;
+      }
+      const tui = await import("./tui/main.tsx");
+      return tui.launchTui(opts, base);
+    },
+  };
   if (argv.length === 0) {
     if (deps.stdinIsTTY && deps.stdoutIsTTY && deps.launchTui) return deps.launchTui({});
     const code = await runCli(["--help"], { ...deps, stdout: deps.stderr });

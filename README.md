@@ -23,7 +23,62 @@ bun run dev -- --help          # = bun run src/main.ts --help
 bun run build                  # → dist/orctl
 ```
 
-A Nix flake is included (`nix develop` gives a shell with Bun).
+### Nix
+
+The repository is a flake:
+
+```sh
+nix run github:tolgaerdonmez/orctl -- models list --max-price 1   # one-off
+nix build github:tolgaerdonmez/orctl                               # → result/bin/orctl
+nix develop                                                        # shell with Bun
+```
+
+For a permanent install on a Nix-managed machine, add it to your system flake instead of
+`npm i -g` / `bun install -g`:
+
+```nix
+# flake inputs
+orctl.url = "github:tolgaerdonmez/orctl";
+# home-manager
+home.packages = [ inputs.orctl.packages.${pkgs.system}.default ];
+```
+
+The flake compiles the single binary from a fixed-output `node_modules` derivation (bun2nix does
+not read Bun 1.4 lockfiles yet). After changing dependencies, set the `outputHash` in `flake.nix`
+to `lib.fakeHash`, run `nix build`, and paste the hash it reports.
+
+An optional declarative config works too; orctl then prints the TOML to add instead of writing:
+
+```nix
+xdg.configFile."orctl/config.toml".source = (pkgs.formats.toml { }).generate "orctl.toml" {
+  version = 1;
+  default_profile = "personal";
+  profiles.personal = {
+    label = "Personal";
+    color = "green";
+    management_key = "keychain:orctl/personal/management";
+  };
+};
+```
+
+## TUI
+
+`orctl` with no arguments on a terminal opens the full-screen UI (`orctl tui <screen>` deep-links
+to `keys`, `models`, `providers`, `usage`, `workspaces` or `profiles`). Every action runs the same
+operation as its CLI command, and the footer always shows that command; `y` copies it.
+
+| Key | Action |
+|---|---|
+| `1`–`7` | Dashboard · Keys · Models · Providers · Usage · Workspaces · Profiles |
+| `ctrl+o` | switch profile |
+| `ctrl+p` | command palette (every operation and its CLI form) |
+| `?` | help and diagnostics |
+| `r` | refresh |
+| `y` | copy the CLI equivalent |
+| `esc` / `q` | back / quit |
+
+The header shows the active profile in its color (`● personal · Personal · ws default · [M][U]`),
+so a red organization profile is hard to miss before a destructive action.
 
 ## Profiles
 
