@@ -1,0 +1,34 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - run: bun install --frozen-lockfile
+      - name: typecheck
+        run: bun run typecheck
+      - name: lint
+        run: bun run lint
+      - name: test
+        run: bun test
+      - name: compile smoke
+        run: |
+          bun run build
+          ./dist/orctl --version
+          ./dist/orctl --help > /dev/null

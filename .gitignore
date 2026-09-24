@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.tmp/
+result
+result-*
+*.log
+.DS_Store
+.lavish/
