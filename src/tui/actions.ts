@@ -22,4 +22,9 @@ export const TUI_ACTIONS: TuiAction[] = [
   { op: "profile.remove", screen: "profiles", key: "D", label: "Remove a profile" },
   { op: "auth.whoami", screen: "dashboard", key: "w", label: "Who am I (refresh)" },
   { op: "auth.doctor", screen: "help", key: "d", label: "Diagnostics (doctor)" },
+  { op: "models.list", screen: "models", key: "/", label: "Search models and prices" },
+  { op: "models.show", screen: "models", key: "enter", label: "Model details (Overview / Pricing)" },
+  { op: "models.endpoints", screen: "models", key: "enter → tab", label: "Model endpoints per provider" },
+  { op: "providers.list", screen: "providers", label: "List providers" },
+  { op: "providers.show", screen: "providers", key: "enter", label: "Provider details" },
 ];

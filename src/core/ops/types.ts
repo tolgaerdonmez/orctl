@@ -1,5 +1,6 @@
 import type { OpenRouter } from "@openrouter/sdk";
 import type { z } from "zod";
+import type { CachePolicy, DiskCache } from "../cache/disk-cache.ts";
 import type { RateLimitInfo } from "../client/factory.ts";
 import type { Clipboard } from "../clipboard.ts";
 import type { OrctlError } from "../errors.ts";
@@ -43,7 +44,7 @@ export interface SdkProvider {
   readonly rateLimit: RateLimitInfo;
 }
 
-export type CachePolicy = "default" | "refresh" | "offline";
+export type { CachePolicy } from "../cache/disk-cache.ts";
 
 export interface Ctx {
   readonly env: Env;
@@ -58,6 +59,8 @@ export interface Ctx {
   readonly sdk: SdkProvider;
   readonly secrets: SecretStore;
   readonly clipboard: Clipboard;
+  /** Public data only (models, providers, endpoints); never account data (plan K19). */
+  readonly cache: DiskCache;
   readonly clock: Clock;
   readonly log: RedactingLogger;
   readonly limiter: Limiter;

@@ -133,6 +133,27 @@ Profile selection order: `--profile/-p` → `ORCTL_PROFILE` → an ephemeral `en
 only profile. `OPENROUTER_API_KEY` is deliberately ignored; bind it explicitly with
 `--user-key-ref env:OPENROUTER_API_KEY` if you want it.
 
+## Models and prices
+
+No key is needed for the public catalog. Prices are shown in USD per million tokens, computed
+exactly from OpenRouter's per-token strings.
+
+```sh
+orctl models list --q claude --sort price
+orctl models list --max-price 1 --param tools --min-context 200000
+orctl models list --free
+orctl models list --zdr --region eu            # server-side filters
+orctl models show openai/gpt-6-luna-pro        # tiers (⚑), cache, per-request/search fees
+orctl models endpoints openai/gpt-6-luna-pro --sort uptime
+orctl providers list
+```
+
+`FREE` marks free models, `VAR` router models whose price depends on the routed model (sorted
+last and excluded by price filters), and `⚑` tiered pricing (for example a higher rate above
+272K prompt tokens; details in `models show`). The full model list is cached for 10 minutes,
+providers for 24 hours and endpoints for 5 minutes under `~/.cache/orctl/v1/`; `--refresh`
+refetches and `--offline` uses only the cache. Only public data is ever cached on disk.
+
 ## Output
 
 Every command prints an aligned table or summary by default and accepts:

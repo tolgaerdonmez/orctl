@@ -1,0 +1,130 @@
+{
+ "data": [
+  {
+   "name": "Cerebras",
+   "slug": "cerebras",
+   "privacy_policy_url": "https://www.cerebras.ai/privacy-policy",
+   "terms_of_service_url": "https://www.cerebras.ai/terms-of-service",
+   "status_page_url": "https://status.cerebras.ai/",
+   "headquarters": "US",
+   "datacenters": null
+  },
+  {
+   "name": "Groq",
+   "slug": "groq",
+   "privacy_policy_url": "https://groq.com/privacy-policy/",
+   "terms_of_service_url": "https://groq.com/terms-of-use/",
+   "status_page_url": "https://status.groq.com/",
+   "headquarters": "US",
+   "datacenters": null
+  },
+  {
+   "name": "DeepSeek",
+   "slug": "deepseek",
+   "privacy_policy_url": "https://chat.deepseek.com/downloads/DeepSeek%20Privacy%20Policy.html",
+   "terms_of_service_url": "https://chat.deepseek.com/downloads/DeepSeek%20Terms%20of%20Use.html",
+   "status_page_url": "https://status.deepseek.com/",
+   "headquarters": "CN",
+   "datacenters": null
+  },
+  {
+   "name": "xAI",
+   "slug": "xai",
+   "privacy_policy_url": "https://x.ai/legal/privacy-policy",
+   "terms_of_service_url": "https://x.ai/legal/terms-of-service-enterprise",
+   "status_page_url": "https://status.x.ai/",
+   "headquarters": "US",
+   "datacenters": null
+  },
+  {
+   "name": "DeepInfra",
+   "slug": "deepinfra",
+   "privacy_policy_url": "https://deepinfra.com/privacy",
+   "terms_of_service_url": "https://deepinfra.com/terms",
+   "status_page_url": "https://status.deepinfra.com/",
+   "headquarters": "US",
+   "datacenters": null
+  },
+  {
+   "name": "Azure",
+   "slug": "azure",
+   "privacy_policy_url": "https://www.microsoft.com/en-us/privacy/privacystatement",
+   "terms_of_service_url": "https://www.microsoft.com/en-us/legal/terms-of-use?oneroute=true",
+   "status_page_url": "https://status.azure.com/",
+   "headquarters": "US",
+   "datacenters": null
+  },
+  {
+   "name": "Anthropic",
+   "slug": "anthropic",
+   "privacy_policy_url": "https://www.anthropic.com/legal/privacy",
+   "terms_of_service_url": "https://www.anthropic.com/legal/commercial-terms",
+   "status_page_url": "https://status.anthropic.com/",
+   "headquarters": "US",
+   "datacenters": null
+  },
+  {
+   "name": "Together",
+   "slug": "together",
+   "privacy_policy_url": "https://www.together.ai/privacy",
+   "terms_of_service_url": "https://www.together.ai/terms-of-service",
+   "status_page_url": "https://status.together.ai/",
+   "headquarters": "US",
+   "datacenters": null
+  },
+  {
+   "name": "Google",
+   "slug": "google-vertex",
+   "privacy_policy_url": "https://cloud.google.com/terms/cloud-privacy-notice",
+   "terms_of_service_url": "https://cloud.google.com/terms/",
+   "status_page_url": "https://status.cloud.google.com/products/sdXM79fz1FS6ekNpu37K/history",
+   "headquarters": "US",
+   "datacenters": null
+  },
+  {
+   "name": "Google AI Studio",
+   "slug": "google-ai-studio",
+   "privacy_policy_url": "https://cloud.google.com/terms/cloud-privacy-notice",
+   "terms_of_service_url": "https://cloud.google.com/terms/",
+   "status_page_url": null,
+   "headquarters": "US",
+   "datacenters": null
+  },
+  {
+   "name": "OpenAI",
+   "slug": "openai",
+   "privacy_policy_url": "https://openai.com/policies/privacy-policy/",
+   "terms_of_service_url": "https://openai.com/policies/row-terms-of-use/",
+   "status_page_url": "https://status.openai.com/",
+   "headquarters": "US",
+   "datacenters": null
+  },
+  {
+   "name": "Fireworks",
+   "slug": "fireworks",
+   "privacy_policy_url": "https://fireworks.ai/privacy-policy",
+   "terms_of_service_url": "https://fireworks.ai/terms-of-service",
+   "status_page_url": "https://status.fireworks.ai/",
+   "headquarters": "US",
+   "datacenters": null
+  },
+  {
+   "name": "Mistral",
+   "slug": "mistral",
+   "privacy_policy_url": "https://mistral.ai/terms/#privacy-policy",
+   "terms_of_service_url": "https://mistral.ai/terms/#terms-of-use",
+   "status_page_url": "https://status.mistral.ai/",
+   "headquarters": "FR",
+   "datacenters": null
+  },
+  {
+   "name": "Novita",
+   "slug": "novita",
+   "privacy_policy_url": "https://novita.ai/legal/privacy-policy",
+   "terms_of_service_url": "https://novita.ai/legal/terms-of-service",
+   "status_page_url": "https://status.novita.ai/",
+   "headquarters": "US",
+   "datacenters": null
+  }
+ ]
+}

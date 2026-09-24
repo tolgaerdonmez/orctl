@@ -82,6 +82,7 @@ export function harness(opts: { env?: Record<string, string> } = {}): Harness {
       home: home.dir,
       platform: "darwin",
       fetcher: fetcher.fetcher,
+      retryConfig: { strategy: "none" },
       clock,
       secretBackends: backends(),
       clipboard: { copy: async () => {}, read: async () => null, clear: async () => {} },
