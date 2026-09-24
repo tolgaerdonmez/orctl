@@ -1,6 +1,6 @@
 {
   "name": "orctl",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "OpenRouter management CLI + TUI: profiles, keys, models, usage, workspaces",
   "license": "MIT",
   "private": true,

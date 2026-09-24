@@ -8,7 +8,29 @@ operations, and the TUI always shows the equivalent CLI command.
 Inference (chat), buying credits and creating management keys are out of scope: OpenRouter only
 allows those on its website.
 
-> Status: under active development (v1 phases F0–F9). See [CHANGELOG.md](CHANGELOG.md).
+> Status: 1.0.0, see [CHANGELOG.md](CHANGELOG.md). Live checks against real keys are listed in
+> [docs/smoke.md](docs/smoke.md).
+
+## Quick start
+
+1. Create a management key at <https://openrouter.ai/settings/management-keys> (give it an expiry).
+2. `orctl profile add personal` and paste it; orctl verifies it and stores it in the Keychain.
+3. `orctl whoami`, `orctl keys list`, `orctl models list --q claude --sort price`, or just `orctl`
+   for the TUI.
+
+## Commands
+
+| Area | Commands |
+|---|---|
+| Profiles | `profile add · set · use · rename · rm · list · show`, `whoami`, `doctor` |
+| Keys | `keys list · show · create · update · disable · enable · rm · rotate`, `credits` |
+| Usage | `usage [--by model\|provider\|day\|workspace\|key]` |
+| Workspaces | `workspaces list · show · create · update · rm · members`, `workspaces budget list · set · rm` |
+| Catalog (no key) | `models list · show · endpoints`, `providers list · show` |
+| Other | `tui [screen]`, `completion zsh` |
+
+Every command has `--help` with its flags and examples. Shell completion for zsh:
+`orctl completion zsh > "${fpath[1]}/_orctl"`.
 
 ## Install
 
@@ -73,9 +95,17 @@ operation as its CLI command, and the footer always shows that command; `y` copi
 | `ctrl+o` | switch profile |
 | `ctrl+p` | command palette (every operation and its CLI form) |
 | `?` | help and diagnostics |
-| `r` | refresh |
+| `r` | refresh (on Keys: rotate) |
+| `/` | filter the current list |
 | `y` | copy the CLI equivalent |
 | `esc` / `q` | back / quit |
+
+Screen keys: Keys `n` new · `e` edit · `space` enable/disable · `r` rotate · `D` delete · `tab`
+workspace · `x` disabled; Models `/` search · `f` filters · `s` sort; Usage `tab` breakdown ·
+`[ ]` window; Workspaces `enter` details, then `tab` Budgets/Members/Keys, `n`/`e`/`D`; Profiles
+`a` add · `e` edit · `enter` use · `R` rename · `D` remove · `v` verify. A new key is shown once in a
+dialog (`c` copy, `s` store in the Keychain); the TUI runs on the alternate screen, so it never
+reaches the terminal scrollback.
 
 The header shows the active profile in its color (`● personal · Personal · ws default · [M][U]`),
 so a red organization profile is hard to miss before a destructive action.
@@ -119,7 +149,7 @@ management_key = "op://Work/OpenRouter ACME/management key"
 
 | Reference | Read | Written by orctl |
 |---|---|---|
-| `keychain:<service>/<account>` | macOS Keychain via `/usr/bin/security` | yes (default target) |
+| `keychain:<service>/<account>` | macOS Keychain via `/usr/bin/security`; Secret Service (libsecret) via Bun on Linux | yes (default target) |
 | `op://<vault>/<item>/<field>` | 1Password CLI (`op read`) | no |
 | `env:<VAR>` | environment variable | no |
 | `file:<path>` | file, must be `0600` | no |

@@ -32,6 +32,9 @@ jobs:
           bun run build
           ./dist/orctl --version
           ./dist/orctl --help > /dev/null
+          bun test/scripts/seed-cache.ts "$RUNNER_TEMP/orctl-cache"
+          XDG_CACHE_HOME="$RUNNER_TEMP/orctl-cache" ORCTL_CONFIG="$RUNNER_TEMP/none.toml" ./dist/orctl models list --offline --limit 5
+          ./dist/orctl completion zsh > /dev/null
 
   nix:
     runs-on: ubuntu-latest

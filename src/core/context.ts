@@ -14,6 +14,7 @@ import { ProfileStore } from "./profile/config-store.ts";
 import { type ResolvedProfile, resolveProfile } from "./profile/resolve.ts";
 import { type Clock, createLimiter, systemClock } from "./runtime.ts";
 import type { Secret } from "./secret.ts";
+import { bunSecretsApi, createBunSecretsBackend } from "./secrets/bun-secrets.ts";
 import { createEnvBackend, createFileBackend } from "./secrets/env-file.ts";
 import { createKeychainBackend } from "./secrets/keychain-macos.ts";
 import { createOnePasswordBackend } from "./secrets/onepassword.ts";
@@ -60,8 +61,11 @@ export function defaultSecretBackends(deps: RuntimeDeps): SecretBackend[] {
   const run = deps.runProcess ?? bunProcessRunner;
   const which = deps.which ?? bunWhich;
   const home = deps.home ?? deps.env.HOME ?? homedir();
+  const platform = deps.platform ?? process.platform;
+  // keychain: is the macOS Keychain via /usr/bin/security; on Linux the Secret Service via Bun.secrets.
+  const secretsApi = platform === "linux" ? bunSecretsApi() : undefined;
   return [
-    createKeychainBackend(run, deps.platform ?? process.platform),
+    secretsApi ? createBunSecretsBackend(secretsApi) : createKeychainBackend(run, platform),
     createOnePasswordBackend(run, which),
     createEnvBackend(deps.env),
     createFileBackend(home),
