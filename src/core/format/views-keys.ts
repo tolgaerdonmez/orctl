@@ -143,6 +143,15 @@ export function creditsLines(c: CreditsResult, s: Style): string[] {
   ];
 }
 
+interface RotationView {
+  old: { hash: string; renamedTo: string; disabled: boolean; deleted: boolean };
+  new: KeyItem;
+  key?: string;
+  storedAt: string | null;
+  copied: boolean;
+  verified: boolean;
+}
+
 interface CreatedKey {
   apiKey: KeyItem;
   key?: string;
@@ -167,6 +176,18 @@ function createdLines(o: CreatedKey, s: Style, now: Date, verb = "Created"): str
 
 export const keyViews: Record<string, View> = {
   "keys.create": lines<CreatedKey>((o, s, now) => createdLines(o, s, now)),
+  "keys.rotate": lines<RotationView>((o, s, now) => [
+    ...createdLines(
+      { apiKey: o.new, key: o.key, storedAt: o.storedAt, copied: o.copied },
+      s,
+      now,
+      "Rotated: new",
+    ),
+    `  verified with GET /key: ${o.verified ? "yes" : "skipped"}`,
+    o.old.deleted
+      ? `  old key ${o.old.hash.slice(0, 12)} deleted`
+      : `  old key ${o.old.hash.slice(0, 12)} renamed to "${o.old.renamedTo}"${o.old.disabled ? " and disabled" : " (still enabled)"}`,
+  ]),
   "keys.update": lines<KeyItem>((k, s, now) => [
     `${s.tone("good", "✔")} Updated key "${k.name}"`,
     ...keyDetailLines(k, s, now),

@@ -26,11 +26,15 @@ export class KeyServer {
     f.get("/credits", credits())
       .get("/workspaces", workspaces())
       .get("/key", (req: RecordedRequest) => {
+        const failure = this.#take(req);
+        if (failure === "network") throw new TypeError("fetch failed");
+        if (failure && failure !== "network-after-create")
+          return apiError(failure.status, "injected failure");
         const bearer = req.headers.authorization?.replace("Bearer ", "");
         const hit = [...this.secrets.entries()].find(([, v]) => v === bearer);
-        if (!hit) return currentKey();
+        if (!hit) return json(currentKey());
         const k = this.keys.find((x) => x.hash === hit[0]);
-        return k?.disabled ? apiError(401, "key disabled") : currentKey({ label: k?.label ?? "?" });
+        return k?.disabled ? apiError(401, "key disabled") : json(currentKey({ label: k?.label ?? "?" }));
       })
       .get("/keys", (req: RecordedRequest) => {
         const ws = req.query.workspace_id ?? WS_DEFAULT;

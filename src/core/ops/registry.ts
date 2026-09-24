@@ -13,6 +13,7 @@ import {
   profileUse,
 } from "./profile.ts";
 import { providersList, providersShow } from "./providers.ts";
+import { keysRotate } from "./rotate.ts";
 import type { AnyOperation, OpId } from "./types.ts";
 
 /** Every operation orctl exposes; the CLI spec and the TUI actions are both checked against it. */
@@ -39,6 +40,7 @@ export const OPERATIONS: readonly AnyOperation[] = [
   keysDisable,
   keysEnable,
   keysDelete,
+  keysRotate,
 ];
 
 const byId = new Map<string, AnyOperation>(OPERATIONS.map((op) => [op.id, op]));

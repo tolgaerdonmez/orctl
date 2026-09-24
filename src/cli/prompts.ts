@@ -67,6 +67,24 @@ export const clackPrompter: Prompter = {
   },
 };
 
+const DELIVERY_LABELS = {
+  store: "Store in the Keychain",
+  show: "Show it once here",
+  copy: "Copy to the clipboard (cleared after 45 s)",
+} as const;
+
+/** Where a new key should go; its plaintext is returned only once (plan §8.1). */
+export async function askDelivery<T extends keyof typeof DELIVERY_LABELS>(
+  prompter: Prompter,
+  choices: T[],
+): Promise<T> {
+  return prompter.select(
+    "Where should the new key go? (it is shown only once)",
+    choices.map((c) => ({ value: c, label: DELIVERY_LABELS[c] })),
+    choices[0],
+  );
+}
+
 /** Typed confirmation for destructive actions (plan §6.10). */
 export async function confirmDestructive(prompter: Prompter, prompt: string, typed?: string): Promise<void> {
   if (typed) {

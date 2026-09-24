@@ -158,6 +158,21 @@ it goes (`--store`, `--show` or `--copy`; asked on a terminal). If storing fails
 deleted again. If the request fails on the network, orctl checks whether the key was created
 anyway and tells you how to delete that orphan (exit 12).
 
+Rotating a key keeps its name, limit, reset, BYOK setting and workspace:
+
+```sh
+orctl keys rotate ci-bot --store --yes           # create → store → verify → disable + rename old
+orctl keys rotate ci-bot --copy --delete-old     # asks for the name before deleting the old key
+orctl keys rotate ci-bot --expires 90d --keep-old-enabled --show
+```
+
+The new key expires after the same lifetime as the old one unless `--expires` says otherwise. It
+is verified with `GET /key` (no spend) before the old key is disabled; the old key is renamed to
+`<name> (rotated YYYY-MM-DD)` and only deleted with `--delete-old`. When the key being rotated is
+the profile's own user key, its Keychain item is updated in place. Each rotation keeps a journal
+under `~/.local/state/orctl/rotations/` (no secrets); if a step fails or you press Ctrl+C, the
+command stops at a step boundary and `orctl doctor` explains how to finish.
+
 Ambiguous references (two keys named `ci-bot` in different workspaces) exit with code 2 and list
 the candidates; add `--workspace` or use a hash prefix. If one workspace fails, the list is still
 printed with a warning; `--strict` turns that into exit code 11.

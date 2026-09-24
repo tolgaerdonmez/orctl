@@ -554,12 +554,54 @@ export const KEY_WRITE_SPECS: CommandSpec[] = [
   },
 ];
 
+export const ROTATE_SPECS: CommandSpec[] = [
+  {
+    op: "keys.rotate",
+    path: ["keys", "rotate"],
+    description: "Replace a key: create, deliver, verify, then disable (or delete) the old one",
+    positionals: [refPositional],
+    flags: [
+      {
+        field: "expires",
+        flags: "--expires <when>",
+        description: "expiry of the new key (default: same lifetime as the old key)",
+        type: "string",
+      },
+      ...deliveryFlags,
+      {
+        field: "keepOldEnabled",
+        flags: "--keep-old-enabled",
+        description: "only rename the old key; do not disable it",
+        type: "boolean",
+      },
+      {
+        field: "deleteOld",
+        flags: "--delete-old",
+        description: "delete the old key afterwards (asks for its name)",
+        type: "boolean",
+      },
+      {
+        field: "verify",
+        flags: "--no-verify",
+        description: "skip GET /key with the new key",
+        type: "negatable",
+      },
+      refWorkspace,
+    ],
+    examples: [
+      "orctl keys rotate ci-bot --store",
+      "orctl keys rotate …1c96 --expires 90d --copy --delete-old --yes",
+    ],
+  },
+];
+
 export const SPECS: readonly CommandSpec[] = [
   ...PROFILE_SPECS,
   ...AUTH_SPECS,
   ...MODEL_SPECS,
   ...KEY_READ_SPECS,
   ...KEY_WRITE_SPECS,
+  ...ROTATE_SPECS,
 ];
 
 export function specFor(op: string): CommandSpec | undefined {

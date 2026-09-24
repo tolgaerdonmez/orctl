@@ -5,6 +5,7 @@
  */
 import { type CliDeps, processDeps } from "./cli/io.ts";
 import { runCli } from "./cli/program.ts";
+import { interruptGuarded, requestInterrupt } from "./core/interrupt.ts";
 import { redact } from "./core/redact.ts";
 
 function installCrashGuards(): void {
@@ -40,6 +41,12 @@ async function main(argv: string[]): Promise<number> {
 }
 
 process.on("SIGINT", () => {
+  // During a rotation, stop at the next step boundary so the journal stays consistent (plan §8.1).
+  if (interruptGuarded()) {
+    requestInterrupt();
+    process.stderr.write("\n! Stopping after the current step…\n");
+    return;
+  }
   process.stderr.write("\n✖ Interrupted.\n");
   process.exit(130);
 });
