@@ -7,6 +7,7 @@ import { viewFor } from "../core/format/views.ts";
 import { messages } from "../core/messages.ts";
 import { getOp } from "../core/ops/registry.ts";
 import type { AnyOperation, CachePolicy, Ctx } from "../core/ops/types.ts";
+import type { Secret } from "../core/secret.ts";
 import type { CommandSpec } from "../surface/spec.ts";
 import { type CliDeps, colorEnabled, type GlobalOptions } from "./io.ts";
 import { renderCsv } from "./output/csv.ts";
@@ -117,7 +118,18 @@ export async function runOp(
       throw new OrctlError("USAGE", detail);
     }
     const input = parsed.data as Record<string, unknown>;
-    ctx = await createContext(deps, {
+    const runtime = {
+      ...deps,
+      // Last resort when a new key can be neither delivered nor deleted (plan §8.1).
+      emergencyReveal: deps.stdoutIsTTY
+        ? async (secret: Secret, message: string) => {
+            deps.stderr(
+              `\n! ${message}\n! The key is shown ONCE so you can store it: ${secret.reveal()}\n\n`,
+            );
+          }
+        : undefined,
+    };
+    ctx = await createContext(runtime, {
       profile: globals.profile,
       config: globals.config,
       debug: globals.debug,

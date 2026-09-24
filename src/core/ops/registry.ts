@@ -1,6 +1,7 @@
 import { authDoctor, authWhoami } from "./auth.ts";
 import { creditsGet } from "./credits.ts";
 import { keysList, keysShow } from "./keys.ts";
+import { keysCreate, keysDelete, keysDisable, keysEnable, keysUpdate } from "./keys-mutate.ts";
 import { modelsEndpoints, modelsList, modelsShow } from "./models.ts";
 import {
   profileAdd,
@@ -33,6 +34,11 @@ export const OPERATIONS: readonly AnyOperation[] = [
   keysList,
   keysShow,
   creditsGet,
+  keysCreate,
+  keysUpdate,
+  keysDisable,
+  keysEnable,
+  keysDelete,
 ];
 
 const byId = new Map<string, AnyOperation>(OPERATIONS.map((op) => [op.id, op]));

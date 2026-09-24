@@ -425,11 +425,141 @@ export const KEY_READ_SPECS: CommandSpec[] = [
   },
 ];
 
+const RESET_CHOICES = ["daily", "weekly", "monthly", "none"] as const;
+const refPositional: PositionalSpec = {
+  field: "ref",
+  name: "ref",
+  required: true,
+  description: "hash, hash prefix, name or …label",
+};
+const refWorkspace: FlagSpec = { ...workspaceFlag, description: "look only in this workspace" };
+
+/** `--limit <usd|none>`: a number, or none to remove the limit. */
+export const limitOrNone: Pick<FlagSpec, "parse" | "format"> = {
+  parse: (raw) => {
+    if (raw.trim().toLowerCase() === "none") return null;
+    const n = Number(raw);
+    if (raw.trim() === "" || !Number.isFinite(n))
+      throw new Error(`expected a USD amount or "none", got "${raw}"`);
+    return n;
+  },
+  format: (v) => (v === null ? "none" : String(v)),
+};
+
+export const deliveryFlags: FlagSpec[] = [
+  {
+    field: "store",
+    flags: "--store [target]",
+    description: "store the new key in the Keychain (default keychain:orctl/<profile>/keys/<name>-<hash8>)",
+    type: "optional-string",
+  },
+  { field: "show", flags: "--show", description: "print the new key once on stdout", type: "boolean" },
+  {
+    field: "copy",
+    flags: "--copy",
+    description: "copy the new key to the clipboard (cleared after 45 s)",
+    type: "boolean",
+  },
+];
+
+export const KEY_WRITE_SPECS: CommandSpec[] = [
+  {
+    op: "keys.create",
+    path: ["keys", "create"],
+    description: "Create an API key and receive it once",
+    positionals: [{ field: "name", name: "name", required: true, description: "key name" }],
+    flags: [
+      { field: "limit", flags: "--limit <usd>", description: "credit limit in USD", type: "number" },
+      {
+        field: "reset",
+        flags: "--reset <interval>",
+        description: "limit reset: daily | weekly | monthly | none",
+        type: "string",
+        choices: RESET_CHOICES,
+      },
+      {
+        field: "expires",
+        flags: "--expires <when>",
+        description: "ISO time, a date (2027-12-31) or a duration (30d, 12h, 2w)",
+        type: "string",
+      },
+      { ...workspaceFlag, description: "workspace (default: the profile's workspace)" },
+      {
+        field: "includeByokInLimit",
+        flags: "--include-byok-in-limit",
+        description: "count BYOK usage toward the limit",
+        type: "boolean",
+      },
+      ...deliveryFlags,
+    ],
+    examples: [
+      "orctl keys create ci-bot --limit 50 --reset monthly --expires 90d --store",
+      "orctl keys create scratch --limit 1 --expires 1d --show --json | jq -r .data.key",
+    ],
+  },
+  {
+    op: "keys.update",
+    path: ["keys", "update"],
+    description: "Rename a key or change its limit",
+    positionals: [refPositional],
+    flags: [
+      { field: "rename", flags: "--rename <name>", description: "new name", type: "string" },
+      {
+        field: "limit",
+        flags: "--limit <usd|none>",
+        description: "new limit, or none",
+        type: "string",
+        ...limitOrNone,
+      },
+      {
+        field: "reset",
+        flags: "--reset <interval>",
+        description: "daily | weekly | monthly | none",
+        type: "string",
+        choices: RESET_CHOICES,
+      },
+      {
+        field: "includeByokInLimit",
+        flags: "--include-byok-in-limit <bool>",
+        description: "true or false",
+        type: "string",
+        choices: ["true", "false"],
+        parse: (raw) => raw === "true",
+        format: (v) => String(v),
+      },
+      refWorkspace,
+    ],
+  },
+  {
+    op: "keys.disable",
+    path: ["keys", "disable"],
+    description: "Disable a key (reversible)",
+    positionals: [refPositional],
+    flags: [refWorkspace],
+  },
+  {
+    op: "keys.enable",
+    path: ["keys", "enable"],
+    description: "Enable a disabled key",
+    positionals: [refPositional],
+    flags: [refWorkspace],
+  },
+  {
+    op: "keys.delete",
+    path: ["keys", "rm"],
+    aliases: [["keys", "delete"]],
+    description: "Delete a key permanently (asks for the name; --yes without a terminal)",
+    positionals: [refPositional],
+    flags: [refWorkspace],
+  },
+];
+
 export const SPECS: readonly CommandSpec[] = [
   ...PROFILE_SPECS,
   ...AUTH_SPECS,
   ...MODEL_SPECS,
   ...KEY_READ_SPECS,
+  ...KEY_WRITE_SPECS,
 ];
 
 export function specFor(op: string): CommandSpec | undefined {

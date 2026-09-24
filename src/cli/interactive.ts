@@ -113,6 +113,29 @@ async function completeProfileAdd(
   return out;
 }
 
+/**
+ * The plaintext of a new key is returned once, so without --store/--show/--copy a terminal user
+ * is asked where it should go (plan §8.1); scripts must pass a flag.
+ */
+async function completeDelivery(
+  input: Record<string, unknown>,
+  deps: CliDeps,
+): Promise<Record<string, unknown>> {
+  if (input.store || input.show || input.copy) return input;
+  const prompter = deps.prompter ?? clackPrompter;
+  const mac = (deps.platform ?? process.platform) === "darwin";
+  const choice = await prompter.select(
+    "Where should the new key go? (it is shown only once)",
+    [
+      ...(mac ? [{ value: "store" as const, label: "Store in the Keychain" }] : []),
+      { value: "show" as const, label: "Show it once here" },
+      { value: "copy" as const, label: "Copy to the clipboard (cleared after 45 s)" },
+    ],
+    mac ? "store" : "show",
+  );
+  return { ...input, [choice]: true };
+}
+
 export async function completeInteractively(
   spec: CommandSpec,
   input: Record<string, unknown>,
@@ -122,5 +145,6 @@ export async function completeInteractively(
   const interactive = deps.stdinIsTTY && deps.stdoutIsTTY && !globals.json;
   if (!interactive) return input;
   if (spec.op === "profile.add") return completeProfileAdd(input, globals, deps);
+  if (spec.op === "keys.create" || spec.op === "keys.rotate") return completeDelivery(input, deps);
   return input;
 }

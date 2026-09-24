@@ -59,4 +59,16 @@ export const PARITY_SAMPLES: Record<string, Array<Record<string, unknown>>> = {
   "keys.list": [{}, { workspace: "research", includeDisabled: true, sort: "usage", strict: true }],
   "keys.show": [{ ref: "ci-bot" }, { ref: "…1c96", workspace: "default" }],
   "credits.get": [{}],
+  "keys.create": [
+    { name: "ci-bot", limit: 50, reset: "monthly", expires: "90d", workspace: "research", store: true },
+    { name: "scratch", show: true, includeByokInLimit: true },
+    { name: "ci", store: "keychain:orctl/acme/ci", copy: true, reset: "none" },
+  ],
+  "keys.update": [
+    { ref: "ci-bot", rename: "ci", limit: null, reset: "none", includeByokInLimit: false },
+    { ref: "abc123", limit: 25.5, workspace: "research" },
+  ],
+  "keys.disable": [{ ref: "ci-bot" }],
+  "keys.enable": [{ ref: "…1c96", workspace: "default" }],
+  "keys.delete": [{ ref: "ci-bot", workspace: "research" }],
 };

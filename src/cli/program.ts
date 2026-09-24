@@ -57,7 +57,13 @@ async function readStdinSecret(deps: CliDeps, flag: string): Promise<Secret> {
 }
 
 function parseFlagValue(flag: FlagSpec, raw: unknown): unknown {
-  if (flag.parse && typeof raw === "string") return flag.parse(raw);
+  if (flag.parse && typeof raw === "string") {
+    try {
+      return flag.parse(raw);
+    } catch (err) {
+      throw new OrctlError("USAGE", `${longFlag(flag.flags)}: ${(err as Error).message}`);
+    }
+  }
   if (flag.type === "number" && typeof raw === "string") {
     const n = Number(raw);
     if (raw.trim() === "" || !Number.isFinite(n))

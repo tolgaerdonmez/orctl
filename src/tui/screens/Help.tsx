@@ -43,12 +43,10 @@ export function HelpScreen() {
           const bindings = bindingsFor(s);
           if (bindings.length === 0) return null;
           return (
-            <box key={s} flexDirection="column">
-              <text fg={theme.accent}>{s}</text>
-              {bindings.map((b) => (
-                <text key={b.key} fg={theme.fg}>{`  ${pad(b.key)} ${b.label}`}</text>
-              ))}
-            </box>
+            <text key={s} wrapMode="word">
+              <span fg={theme.accent}>{`${s}: `}</span>
+              <span fg={theme.fg}>{bindings.map((b) => `${b.key} ${b.label}`).join(" · ")}</span>
+            </text>
           );
         })}
       </Panel>

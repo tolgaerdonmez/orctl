@@ -3,6 +3,7 @@ import { join, resolve } from "node:path";
 import type { CliDeps } from "../src/cli/io.ts";
 import { runCli } from "../src/cli/program.ts";
 import type { Prompter } from "../src/cli/prompts.ts";
+import type { Clipboard } from "../src/core/clipboard.ts";
 import { createContext, type RunOptions } from "../src/core/context.ts";
 import type { Ctx } from "../src/core/ops/types.ts";
 import type { Clock } from "../src/core/runtime.ts";
@@ -55,6 +56,7 @@ export interface Harness {
   fetcher: FakeFetcher;
   keychain: FakeKeychain;
   op: FakeOnePassword;
+  clipboard: FakeClipboard;
   clock: ReturnType<typeof fixedClock>;
   backends(): SecretBackend[];
   deps(over?: Partial<CliDeps> & { stdin?: string }): CliDeps & { out: string[]; err: string[] };
@@ -73,6 +75,7 @@ export function harness(opts: { env?: Record<string, string> } = {}): Harness {
   const keychain = new FakeKeychain();
   const op = new FakeOnePassword();
   const clock = fixedClock();
+  const clipboard = new FakeClipboard();
   const backends = () => [keychain, op, createEnvBackend(env), createFileBackend(home.dir)];
   const makeDeps = (over: Partial<CliDeps> & { stdin?: string } = {}) => {
     const out: string[] = [];
@@ -85,7 +88,7 @@ export function harness(opts: { env?: Record<string, string> } = {}): Harness {
       retryConfig: { strategy: "none" },
       clock,
       secretBackends: backends(),
-      clipboard: { copy: async () => {}, read: async () => null, clear: async () => {} },
+      clipboard,
       debugSink: (line) => err.push(`${line}\n`),
       stdout: (t) => out.push(t),
       stderr: (t) => err.push(t),
@@ -105,6 +108,7 @@ export function harness(opts: { env?: Record<string, string> } = {}): Harness {
     fetcher,
     keychain,
     op,
+    clipboard,
     clock,
     backends,
     deps: makeDeps,
@@ -116,6 +120,26 @@ export function harness(opts: { env?: Record<string, string> } = {}): Harness {
     ctx: (options) => createContext(makeDeps(), options),
     cleanup: home.cleanup,
   };
+}
+
+/** In-memory clipboard; records copies and scheduled clears. */
+export class FakeClipboard implements Clipboard {
+  value: string | null = null;
+  copies: string[] = [];
+  clearLaterCalls = 0;
+  async copy(v: string) {
+    this.value = v;
+    this.copies.push(v);
+  }
+  async read() {
+    return this.value;
+  }
+  async clear() {
+    this.value = "";
+  }
+  clearLater() {
+    this.clearLaterCalls++;
+  }
 }
 
 /** A Prompter that answers from a script, in order; unexpected prompts fail the test. */

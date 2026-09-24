@@ -5,6 +5,7 @@ import { Confirm } from "./components/dialogs.tsx";
 import { Footer, Header, Tabs, Toasts } from "./components/Shell.tsx";
 import { DashboardScreen } from "./screens/Dashboard.tsx";
 import { HelpScreen } from "./screens/Help.tsx";
+import { KeyForm } from "./screens/KeyForm.tsx";
 import { KeyDetailScreen, KeysScreen } from "./screens/Keys.tsx";
 import { ModelDetailScreen } from "./screens/ModelDetail.tsx";
 import { ModelsScreen } from "./screens/Models.tsx";
@@ -32,6 +33,12 @@ export const SCREENS: Record<string, ScreenComponent> = {
   providers: () => <ProvidersScreen />,
   keys: () => <KeysScreen />,
   "key-detail": ({ screen }) => <KeyDetailScreen hash={String(screen.params?.hash ?? "")} />,
+  "key-form": ({ screen }) => (
+    <KeyForm
+      mode={(screen.params?.mode as "create" | "edit") ?? "create"}
+      hash={screen.params?.hash as string | undefined}
+    />
+  ),
 };
 
 function GlobalKeys() {

@@ -30,4 +30,9 @@ export const TUI_ACTIONS: TuiAction[] = [
   { op: "keys.list", screen: "keys", key: "tab / x", label: "List keys (workspace filter, disabled)" },
   { op: "keys.show", screen: "keys", key: "enter", label: "Key details" },
   { op: "credits.get", screen: "dashboard", label: "Credits card" },
+  { op: "keys.create", screen: "keys", key: "n", label: "Create a key (shown once)" },
+  { op: "keys.update", screen: "keys", key: "e", label: "Edit a key (name, limit)" },
+  { op: "keys.disable", screen: "keys", key: "space", label: "Disable a key" },
+  { op: "keys.enable", screen: "keys", key: "space", label: "Enable a key" },
+  { op: "keys.delete", screen: "keys", key: "D", label: "Delete a key (typed name)" },
 ];
