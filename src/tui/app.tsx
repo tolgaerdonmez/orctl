@@ -14,13 +14,15 @@ import { ProfilesScreen } from "./screens/Profiles.tsx";
 import { ProfileWizard } from "./screens/ProfileWizard.tsx";
 import { ProvidersScreen } from "./screens/Providers.tsx";
 import { RotateWizard } from "./screens/RotateWizard.tsx";
+import { TopModelsCard, UsageScreen } from "./screens/Usage.tsx";
 import { Layer, type Screen, TABS, type TuiOptions, TuiProvider, useKeys, useTui } from "./state.tsx";
 
 type ScreenComponent = FunctionComponent<{ screen: Screen }>;
 
 /** Screen registry (plan §7.3). Tabs 1–7 plus detail screens pushed on the stack. */
 export const SCREENS: Record<string, ScreenComponent> = {
-  dashboard: () => <DashboardScreen />,
+  dashboard: () => <DashboardScreen cards={[TopModelsCard]} />,
+  usage: () => <UsageScreen />,
   profiles: () => <ProfilesScreen />,
   "profile-wizard": ({ screen }) => (
     <ProfileWizard

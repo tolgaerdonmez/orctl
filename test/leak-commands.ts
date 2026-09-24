@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { serveActivity } from "./fixtures/activity.ts";
 import { KeyServer } from "./fixtures/key-server.ts";
 import { serveKeys } from "./fixtures/keys.ts";
 import type { Harness } from "./helpers.ts";
@@ -28,6 +29,9 @@ export const LEAK_COMMANDS: string[][] = [
   ["keys", "update", "laptop", "--limit", "5"],
   ["keys", "disable", "laptop"],
   ["keys", "rm", "laptop", "--yes"],
+  ["usage"],
+  ["usage", "--by", "key"],
+  ["usage", "--by", "workspace", "--days", "7"],
   ["keys", "rotate", "ci-bot", "--workspace", "default", "--store", "--yes"],
   ["keys", "rotate", "ci-bot", "--workspace", "default", "--copy", "--yes", "--no-verify"],
 ];
@@ -37,6 +41,7 @@ export function registerLeakFixtures(h: Harness): void {
   // KeyServer answers create/update/delete; serveKeys (registered later, so it wins) answers reads.
   new KeyServer(h.fetcher, () => h.clock.now());
   serveKeys(h.fetcher);
+  serveActivity(h.fetcher);
   h.fetcher
     .get("/models", fixture("models.json"))
     .get("/providers", fixture("providers.json"))

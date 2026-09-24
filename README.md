@@ -177,6 +177,19 @@ Ambiguous references (two keys named `ci-bot` in different workspaces) exit with
 the candidates; add `--workspace` or use a hash prefix. If one workspace fails, the list is still
 printed with a warning; `--strict` turns that into exit code 11.
 
+## Usage
+
+```sh
+orctl usage                              # by model, last 30 days
+orctl usage --by provider --days 7
+orctl usage --by day --since 2026-09-01 --csv
+orctl usage --key ci-bot                 # one key's activity
+orctl usage --by key                     # per-key counters: today / week / month / all time
+```
+
+OpenRouter's activity API covers the last 30 completed UTC days and its rows carry no key, so
+`--by key` reads the per-key usage counters instead (the output says which source it used).
+
 ## Models and prices
 
 No key is needed for the public catalog. Prices are shown in USD per million tokens, computed

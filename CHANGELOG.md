@@ -37,4 +37,9 @@
   (`--keep-old-enabled`, `--delete-old`), with a secret-free journal, automatic rollback of an
   undelivered key, step-boundary SIGINT handling and `doctor` recovery steps; TUI RotateWizard
   (plan, delivery, confirmation, live progress, one-time reveal).
+- F7: `orctl usage` over the last 30 completed UTC days (GET /activity, one call, breakdown
+  computed locally) by model (default), provider, day or workspace, with `--days`,
+  `--since/--until` (30-day limit enforced), `--key`, `--workspace`, totals, share, spend bars and
+  CSV; `--by key` uses the per-key counters and says so. TUI Usage screen (breakdown tabs, date
+  window) and a "top models, last 7 days" dashboard card.
 

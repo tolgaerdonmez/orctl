@@ -595,6 +595,35 @@ export const ROTATE_SPECS: CommandSpec[] = [
   },
 ];
 
+export const USAGE_SPECS: CommandSpec[] = [
+  {
+    op: "usage.report",
+    path: ["usage"],
+    description: "Spending over the last 30 days by model, provider, day, workspace or key",
+    positionals: [],
+    flags: [
+      {
+        field: "by",
+        flags: "--by <group>",
+        description: "model (default) | provider | day | workspace | key",
+        type: "string",
+        choices: ["model", "provider", "day", "workspace", "key"],
+      },
+      { field: "since", flags: "--since <date>", description: "first day (YYYY-MM-DD, UTC)", type: "string" },
+      { field: "until", flags: "--until <date>", description: "last day (YYYY-MM-DD, UTC)", type: "string" },
+      { field: "days", flags: "--days <n>", description: "last n days (max 30)", type: "number" },
+      { field: "key", flags: "--key <ref>", description: "only this key's activity", type: "string" },
+      { ...workspaceFlag, description: "only this workspace" },
+    ],
+    list: true,
+    examples: [
+      "orctl usage --days 7",
+      "orctl usage --by day --since 2026-09-01 --csv",
+      "orctl usage --by key",
+    ],
+  },
+];
+
 export const SPECS: readonly CommandSpec[] = [
   ...PROFILE_SPECS,
   ...AUTH_SPECS,
@@ -602,6 +631,7 @@ export const SPECS: readonly CommandSpec[] = [
   ...KEY_READ_SPECS,
   ...KEY_WRITE_SPECS,
   ...ROTATE_SPECS,
+  ...USAGE_SPECS,
 ];
 
 export function specFor(op: string): CommandSpec | undefined {
