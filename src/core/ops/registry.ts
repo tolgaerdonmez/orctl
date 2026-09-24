@@ -1,0 +1,36 @@
+import { authDoctor, authWhoami } from "./auth.ts";
+import {
+  profileAdd,
+  profileList,
+  profileRemove,
+  profileRename,
+  profileSet,
+  profileShow,
+  profileUse,
+} from "./profile.ts";
+import type { AnyOperation, OpId } from "./types.ts";
+
+/** Every operation orctl exposes; the CLI spec and the TUI actions are both checked against it. */
+export const OPERATIONS: readonly AnyOperation[] = [
+  profileList,
+  profileShow,
+  profileAdd,
+  profileSet,
+  profileUse,
+  profileRename,
+  profileRemove,
+  authWhoami,
+  authDoctor,
+];
+
+const byId = new Map<string, AnyOperation>(OPERATIONS.map((op) => [op.id, op]));
+
+export function getOp(id: OpId | string): AnyOperation {
+  const op = byId.get(id);
+  if (!op) throw new Error(`unknown operation ${id}`);
+  return op;
+}
+
+export function hasOp(id: string): boolean {
+  return byId.has(id);
+}

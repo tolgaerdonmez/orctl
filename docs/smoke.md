@@ -1,0 +1,28 @@
+# Manual live smoke tests
+
+The automated suite runs against a fake HTTP layer and fake secret stores. These checks need real
+OpenRouter keys and the real macOS Keychain, so they are run by hand. Use throwaway profiles.
+
+Point orctl at a scratch home so nothing touches your real config:
+
+```sh
+export ORCTL_CONFIG=$PWD/.tmp/smoke/config.toml
+export XDG_STATE_HOME=$PWD/.tmp/smoke/state XDG_CACHE_HOME=$PWD/.tmp/smoke/cache
+```
+
+## F1: profiles
+
+1. Keychain profile: `orctl profile add smoke-kc` → "Paste (stored in Keychain)" → paste a
+   management key. Expect "Verified: management role" and
+   `keychain:orctl/smoke-kc/management` in the config.
+2. 1Password profile: `orctl profile add smoke-op --mgmt-key-ref "op://<vault>/<item>/<field>"`.
+3. `orctl whoami -p smoke-kc` and `orctl whoami -p smoke-op` both show credits.
+4. `orctl profile use smoke-op && orctl whoami` shows `selected via state`.
+5. While step 1 runs, `ps -ax -o args | grep security` must never show an `sk-or-` value.
+6. Build twice (`bun run build`, change nothing, rebuild) and run `./dist/orctl whoami -p smoke-kc`
+   after each build: no new Keychain access prompt should appear (the item was created by
+   `/usr/bin/security`, not by the orctl binary).
+7. Clean up: `orctl profile rm smoke-kc --purge-secrets --yes`, `orctl profile rm smoke-op --yes`.
+
+Optional automated Keychain check (writes and deletes a random `orctl-test-*` item):
+`ORCTL_IT_KEYCHAIN=1 bun test test/core/keychain-it.test.ts`.
