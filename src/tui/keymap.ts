@@ -68,6 +68,11 @@ export const SCREEN_BINDINGS: Binding[] = [
   { key: "r", label: "rotate key", scope: "keys" },
   { key: "tab", label: "breakdown", scope: "usage" },
   { key: "[ ]", label: "date window", scope: "usage" },
+  { key: "enter", label: "workspace details", scope: "workspaces" },
+  { key: "n", label: "new workspace / budget", scope: "workspaces" },
+  { key: "tab", label: "Budgets · Members · Keys", scope: "workspaces" },
+  { key: "e", label: "edit workspace / budget", scope: "workspaces" },
+  { key: "D", label: "delete workspace / budget", scope: "workspaces" },
 ];
 
 export function bindingsFor(scope: string): Binding[] {

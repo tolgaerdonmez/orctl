@@ -39,6 +39,8 @@ export interface PositionalSpec {
   name: string;
   required: boolean;
   description: string;
+  /** Parsed with Number() when "number". */
+  type?: "string" | "number" | undefined;
 }
 
 export interface CommandSpec {
@@ -624,6 +626,117 @@ export const USAGE_SPECS: CommandSpec[] = [
   },
 ];
 
+const wsPositional: PositionalSpec = {
+  field: "ref",
+  name: "workspace",
+  required: true,
+  description: "workspace id, slug or name",
+};
+const INTERVALS = ["daily", "weekly", "monthly", "lifetime"] as const;
+
+export const WORKSPACE_SPECS: CommandSpec[] = [
+  {
+    op: "workspaces.list",
+    path: ["workspaces", "list"],
+    aliases: [["workspaces", "ls"]],
+    description: "List workspaces",
+    positionals: [],
+    flags: [],
+    list: true,
+  },
+  {
+    op: "workspaces.show",
+    path: ["workspaces", "show"],
+    description: "Show a workspace with its budgets, members and key count",
+    positionals: [wsPositional],
+    flags: [],
+  },
+  {
+    op: "workspaces.create",
+    path: ["workspaces", "create"],
+    description: "Create a workspace",
+    positionals: [{ field: "name", name: "name", required: true, description: "display name" }],
+    flags: [
+      {
+        field: "slug",
+        flags: "--slug <slug>",
+        description: "URL slug (default: from the name)",
+        type: "string",
+      },
+      { field: "description", flags: "--description <text>", description: "description", type: "string" },
+    ],
+  },
+  {
+    op: "workspaces.update",
+    path: ["workspaces", "update"],
+    description: "Rename a workspace or change its slug or description",
+    positionals: [wsPositional],
+    flags: [
+      { field: "name", flags: "--name <name>", description: "new name", type: "string" },
+      { field: "slug", flags: "--slug <slug>", description: "new slug", type: "string" },
+      { field: "description", flags: "--description <text>", description: "new description", type: "string" },
+    ],
+  },
+  {
+    op: "workspaces.delete",
+    path: ["workspaces", "rm"],
+    aliases: [["workspaces", "delete"]],
+    description: "Delete a workspace (asks for its slug; --yes without a terminal)",
+    positionals: [wsPositional],
+    flags: [],
+  },
+  {
+    op: "workspaces.members",
+    path: ["workspaces", "members"],
+    description: "List a workspace's members (read-only)",
+    positionals: [wsPositional],
+    flags: [],
+    list: true,
+  },
+  {
+    op: "budgets.list",
+    path: ["workspaces", "budget", "list"],
+    aliases: [["workspaces", "budget", "ls"]],
+    description: "List a workspace's budgets",
+    positionals: [wsPositional],
+    flags: [],
+    list: true,
+  },
+  {
+    op: "budgets.set",
+    path: ["workspaces", "budget", "set"],
+    description: "Set a workspace budget",
+    positionals: [
+      wsPositional,
+      {
+        field: "interval",
+        name: "interval",
+        required: true,
+        description: "daily | weekly | monthly | lifetime",
+      },
+      { field: "usd", name: "usd", required: true, description: "limit in USD", type: "number" },
+    ],
+    flags: [
+      {
+        field: "includeByok",
+        flags: "--include-byok",
+        description: "count BYOK usage toward budgets",
+        type: "boolean",
+      },
+    ],
+  },
+  {
+    op: "budgets.delete",
+    path: ["workspaces", "budget", "rm"],
+    description: "Remove a workspace budget",
+    positionals: [
+      wsPositional,
+      { field: "interval", name: "interval", required: true, description: INTERVALS.join(" | ") },
+    ],
+    flags: [],
+  },
+];
+
 export const SPECS: readonly CommandSpec[] = [
   ...PROFILE_SPECS,
   ...AUTH_SPECS,
@@ -632,6 +745,7 @@ export const SPECS: readonly CommandSpec[] = [
   ...KEY_WRITE_SPECS,
   ...ROTATE_SPECS,
   ...USAGE_SPECS,
+  ...WORKSPACE_SPECS,
 ];
 
 export function specFor(op: string): CommandSpec | undefined {

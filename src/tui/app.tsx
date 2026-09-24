@@ -15,6 +15,7 @@ import { ProfileWizard } from "./screens/ProfileWizard.tsx";
 import { ProvidersScreen } from "./screens/Providers.tsx";
 import { RotateWizard } from "./screens/RotateWizard.tsx";
 import { TopModelsCard, UsageScreen } from "./screens/Usage.tsx";
+import { WorkspaceDetailScreen, WorkspaceForm, WorkspacesScreen } from "./screens/Workspaces.tsx";
 import { Layer, type Screen, TABS, type TuiOptions, TuiProvider, useKeys, useTui } from "./state.tsx";
 
 type ScreenComponent = FunctionComponent<{ screen: Screen }>;
@@ -23,6 +24,14 @@ type ScreenComponent = FunctionComponent<{ screen: Screen }>;
 export const SCREENS: Record<string, ScreenComponent> = {
   dashboard: () => <DashboardScreen cards={[TopModelsCard]} />,
   usage: () => <UsageScreen />,
+  workspaces: () => <WorkspacesScreen />,
+  "workspace-detail": ({ screen }) => <WorkspaceDetailScreen ref={String(screen.params?.ref ?? "")} />,
+  "workspace-form": ({ screen }) => (
+    <WorkspaceForm
+      mode={(screen.params?.mode as "create" | "edit") ?? "create"}
+      ref={screen.params?.ref as string | undefined}
+    />
+  ),
   profiles: () => <ProfilesScreen />,
   "profile-wizard": ({ screen }) => (
     <ProfileWizard

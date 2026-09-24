@@ -82,4 +82,19 @@ export const PARITY_SAMPLES: Record<string, Array<Record<string, unknown>>> = {
     { ref: "…1c96", expires: "90d", copy: true, deleteOld: true, verify: false, workspace: "research" },
     { ref: "abc123", show: true, keepOldEnabled: true },
   ],
+  "workspaces.list": [{}],
+  "workspaces.show": [{ ref: "research" }],
+  "workspaces.create": [
+    { name: "Data Science" },
+    { name: "DS", slug: "ds", description: "Data team's space" },
+  ],
+  "workspaces.update": [{ ref: "ds", name: "Data", slug: "data", description: "x" }],
+  "workspaces.delete": [{ ref: "ds" }],
+  "workspaces.members": [{ ref: "research" }],
+  "budgets.list": [{ ref: "research" }],
+  "budgets.set": [
+    { ref: "research", interval: "monthly", usd: 100 },
+    { ref: "research", interval: "lifetime", usd: 12.5, includeByok: true },
+  ],
+  "budgets.delete": [{ ref: "research", interval: "daily" }],
 };

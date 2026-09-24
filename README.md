@@ -190,6 +190,18 @@ orctl usage --by key                     # per-key counters: today / week / mont
 OpenRouter's activity API covers the last 30 completed UTC days and its rows carry no key, so
 `--by key` reads the per-key usage counters instead (the output says which source it used).
 
+## Workspaces and budgets
+
+```sh
+orctl workspaces list
+orctl workspaces show research                  # budgets, members, key count
+orctl workspaces create "Data Science"          # slug derived: data-science
+orctl workspaces budget set research monthly 100 --include-byok
+orctl workspaces budget rm research monthly
+orctl workspaces members research               # read-only in v1
+orctl workspaces rm data-science                # type the slug to confirm
+```
+
 ## Models and prices
 
 No key is needed for the public catalog. Prices are shown in USD per million tokens, computed

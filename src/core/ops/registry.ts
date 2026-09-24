@@ -16,6 +16,17 @@ import { providersList, providersShow } from "./providers.ts";
 import { keysRotate } from "./rotate.ts";
 import type { AnyOperation, OpId } from "./types.ts";
 import { usageReportOp } from "./usage.ts";
+import {
+  budgetsDelete,
+  budgetsList,
+  budgetsSet,
+  workspacesCreate,
+  workspacesDelete,
+  workspacesList,
+  workspacesMembers,
+  workspacesShow,
+  workspacesUpdate,
+} from "./workspaces.ts";
 
 /** Every operation orctl exposes; the CLI spec and the TUI actions are both checked against it. */
 export const OPERATIONS: readonly AnyOperation[] = [
@@ -43,6 +54,15 @@ export const OPERATIONS: readonly AnyOperation[] = [
   keysDelete,
   keysRotate,
   usageReportOp,
+  workspacesList,
+  workspacesShow,
+  workspacesCreate,
+  workspacesUpdate,
+  workspacesDelete,
+  workspacesMembers,
+  budgetsList,
+  budgetsSet,
+  budgetsDelete,
 ];
 
 const byId = new Map<string, AnyOperation>(OPERATIONS.map((op) => [op.id, op]));
