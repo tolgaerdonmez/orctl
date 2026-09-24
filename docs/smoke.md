@@ -37,3 +37,12 @@ Use a throwaway profile with a management key.
 4. `orctl keys rm smoke-f5b` (type the name) and delete the Keychain item:
    `security delete-generic-password -s orctl -a <account from step 1>`.
 
+## F6: rotation
+
+1. `orctl keys create smoke-f6 --limit 0.01 --expires 1d --store`
+2. `orctl keys rotate smoke-f6 --store --yes` → the output says "verified with GET /key: yes" and
+   the old key is `smoke-f6 (rotated <date>)`, disabled.
+3. `orctl keys list --include-disabled` shows both; `orctl doctor` reports no unfinished rotations.
+4. Clean up: `orctl keys rm smoke-f6 --yes`, `orctl keys rm "smoke-f6 (rotated <date>)" --yes`, and
+   the two Keychain items under service `orctl`.
+

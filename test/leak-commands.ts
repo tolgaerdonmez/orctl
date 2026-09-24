@@ -28,6 +28,8 @@ export const LEAK_COMMANDS: string[][] = [
   ["keys", "update", "laptop", "--limit", "5"],
   ["keys", "disable", "laptop"],
   ["keys", "rm", "laptop", "--yes"],
+  ["keys", "rotate", "ci-bot", "--workspace", "default", "--store", "--yes"],
+  ["keys", "rotate", "ci-bot", "--workspace", "default", "--copy", "--yes", "--no-verify"],
 ];
 
 /** Extra fake routes needed by LEAK_COMMANDS beyond the profile basics. */

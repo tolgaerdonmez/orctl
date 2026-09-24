@@ -63,6 +63,9 @@ export interface Ctx {
   readonly cache: DiskCache;
   /** Adapter hook for a key that could be neither delivered nor deleted again (plan §8.1). */
   readonly emergencyReveal?: ((secret: Secret, message: string) => Promise<void>) | undefined;
+  readonly askDelivery?:
+    | ((choices: Array<"store" | "show" | "copy">) => Promise<"store" | "show" | "copy">)
+    | undefined;
   readonly clock: Clock;
   readonly log: RedactingLogger;
   readonly limiter: Limiter;

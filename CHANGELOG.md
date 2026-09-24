@@ -31,3 +31,10 @@
   `keys update` (rename, `--limit none`, reset, BYOK), `keys disable|enable`, `keys rm` with typed
   confirmation; TUI key form, one-time SecretReveal dialog (copy / store / warn before closing),
   space to enable/disable, D to delete.
+- F6: `keys rotate`: pure planner (same name, limit, reset, BYOK, workspace; expiry from
+  `--expires` or the old key's lifetime), then create → deliver (the profile's own user key is
+  updated in place in its Keychain item) → verify with GET /key → rename and disable the old key
+  (`--keep-old-enabled`, `--delete-old`), with a secret-free journal, automatic rollback of an
+  undelivered key, step-boundary SIGINT handling and `doctor` recovery steps; TUI RotateWizard
+  (plan, delivery, confirmation, live progress, one-time reveal).
+

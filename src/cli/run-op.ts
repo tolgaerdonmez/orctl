@@ -1,5 +1,5 @@
 import { mapError } from "../core/client/map-error.ts";
-import { createContext } from "../core/context.ts";
+import { createContext, type DeliveryChoice } from "../core/context.ts";
 import { ExitCode, OrctlError } from "../core/errors.ts";
 import { ColumnError, selectColumns } from "../core/format/columns.ts";
 import { columnsOf, type View } from "../core/format/view.ts";
@@ -14,7 +14,7 @@ import { renderCsv } from "./output/csv.ts";
 import { envelopeMeta, errorEnvelope, successEnvelope } from "./output/json.ts";
 import { finalize, markerStyle } from "./output/style.ts";
 import { renderTable } from "./output/table.ts";
-import { clackPrompter, confirmDestructive } from "./prompts.ts";
+import { askDelivery, clackPrompter, confirmDestructive } from "./prompts.ts";
 
 export function cachePolicyOf(globals: GlobalOptions): CachePolicy {
   if (globals.refresh && globals.offline)
@@ -128,6 +128,10 @@ export async function runOp(
             );
           }
         : undefined,
+      askDelivery:
+        deps.stdinIsTTY && deps.stdoutIsTTY && !globals.json
+          ? (choices: DeliveryChoice[]) => askDelivery(deps.prompter ?? clackPrompter, choices)
+          : undefined,
     };
     ctx = await createContext(runtime, {
       profile: globals.profile,

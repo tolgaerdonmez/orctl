@@ -145,6 +145,6 @@ export async function completeInteractively(
   const interactive = deps.stdinIsTTY && deps.stdoutIsTTY && !globals.json;
   if (!interactive) return input;
   if (spec.op === "profile.add") return completeProfileAdd(input, globals, deps);
-  if (spec.op === "keys.create" || spec.op === "keys.rotate") return completeDelivery(input, deps);
+  if (spec.op === "keys.create") return completeDelivery(input, deps);
   return input;
 }

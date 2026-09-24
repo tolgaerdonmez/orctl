@@ -40,7 +40,11 @@ export interface RuntimeDeps {
    * §8.1): the CLI prints it once on a terminal, the TUI shows it in the reveal dialog.
    */
   emergencyReveal?: ((secret: Secret, message: string) => Promise<void>) | undefined;
+  /** Asks where a new key should go when no --store/--show/--copy was given (terminal only). */
+  askDelivery?: ((choices: DeliveryChoice[]) => Promise<DeliveryChoice>) | undefined;
 }
+
+export type DeliveryChoice = "store" | "show" | "copy";
 
 export interface RunOptions {
   profile?: string | undefined;
@@ -141,6 +145,7 @@ export async function createContext(deps: RuntimeDeps, options: RunOptions = {})
     clipboard,
     cache: new DiskCache(paths.cacheDir, clock),
     emergencyReveal: deps.emergencyReveal,
+    askDelivery: deps.askDelivery,
     clock,
     log,
     limiter: createLimiter(4),

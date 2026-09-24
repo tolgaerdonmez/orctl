@@ -13,6 +13,7 @@ import {
   probeUser,
   type UserProbe,
 } from "./probes.ts";
+import { openRotations } from "./rotate.ts";
 import { type Ctx, defineOp } from "./types.ts";
 
 export interface WhoamiResult {
@@ -91,6 +92,18 @@ export interface DoctorCheck {
   hint?: string | undefined;
   /** Exit code this failure maps to (the first failing check decides doctor's exit code). */
   exit?: number | undefined;
+}
+
+/** Unfinished rotations (plan §8.1): each open journal with the steps that finish it. */
+async function rotationChecks(ctx: Ctx): Promise<DoctorCheck[]> {
+  const open = await openRotations(ctx);
+  if (open.length === 0) return [{ id: "rotations", status: "ok", message: "No unfinished key rotations." }];
+  return open.map(({ journal, steps }) => ({
+    id: `rotation:${journal.id}`,
+    status: "warn" as const,
+    message: `Unfinished rotation of "${journal.old.name}" (profile ${journal.profile}, started ${journal.startedAt}).`,
+    hint: steps.join("\n    "),
+  }));
 }
 
 async function cacheChecks(ctx: Ctx): Promise<DoctorCheck[]> {
@@ -265,6 +278,7 @@ export const authDoctor = defineOp({
       ...(await networkChecks(ctx, offline)),
     ];
     checks.push(...(await cacheChecks(ctx)));
+    checks.push(...(await rotationChecks(ctx)));
     const failed = checks.find((c) => c.status === "fail");
     if (failed) ctx.meta.exit = failed.exit ?? ExitCode.UNEXPECTED;
     return {

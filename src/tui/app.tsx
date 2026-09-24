@@ -13,6 +13,7 @@ import { Palette, Placeholder, ProfileSwitcher } from "./screens/overlays.tsx";
 import { ProfilesScreen } from "./screens/Profiles.tsx";
 import { ProfileWizard } from "./screens/ProfileWizard.tsx";
 import { ProvidersScreen } from "./screens/Providers.tsx";
+import { RotateWizard } from "./screens/RotateWizard.tsx";
 import { Layer, type Screen, TABS, type TuiOptions, TuiProvider, useKeys, useTui } from "./state.tsx";
 
 type ScreenComponent = FunctionComponent<{ screen: Screen }>;
@@ -33,6 +34,7 @@ export const SCREENS: Record<string, ScreenComponent> = {
   providers: () => <ProvidersScreen />,
   keys: () => <KeysScreen />,
   "key-detail": ({ screen }) => <KeyDetailScreen hash={String(screen.params?.hash ?? "")} />,
+  rotate: ({ screen }) => <RotateWizard hash={String(screen.params?.hash ?? "")} />,
   "key-form": ({ screen }) => (
     <KeyForm
       mode={(screen.params?.mode as "create" | "edit") ?? "create"}

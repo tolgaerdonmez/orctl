@@ -16,6 +16,9 @@ export function keyAction(tui: TuiState, id: string, key: KeyItem | undefined): 
     case "n":
       tui.push({ id: "key-form", params: { mode: "create" } });
       return true;
+    case "r":
+      if (key) tui.push({ id: "rotate", params: { hash: key.hash } });
+      return true;
     case "e":
       if (key) tui.push({ id: "key-form", params: { mode: "edit", hash: key.hash } });
       return true;

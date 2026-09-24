@@ -65,6 +65,7 @@ export const SCREEN_BINDINGS: Binding[] = [
   { key: "e", label: "edit key", scope: "keys" },
   { key: "space", label: "enable / disable", scope: "keys" },
   { key: "D", label: "delete key", scope: "keys" },
+  { key: "r", label: "rotate key", scope: "keys" },
 ];
 
 export function bindingsFor(scope: string): Binding[] {
