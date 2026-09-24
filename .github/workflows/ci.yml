@@ -32,3 +32,13 @@ jobs:
           bun run build
           ./dist/orctl --version
           ./dist/orctl --help > /dev/null
+
+  nix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+      - name: nix build
+        run: nix build .#default -L
+      - name: smoke
+        run: ./result/bin/orctl --version

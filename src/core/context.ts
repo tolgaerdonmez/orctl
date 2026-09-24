@@ -85,7 +85,6 @@ export async function createContext(deps: RuntimeDeps, options: RunOptions = {})
   const timeoutMs = Math.round((options.timeoutSeconds ?? DEFAULT_TIMEOUT_SECONDS) * 1000);
   const rateLimit: RateLimitInfo = {};
   const clientOptions = { fetcher: deps.fetcher, timeoutMs, log, rateLimit };
-  const memo = new Map<string, Promise<unknown>>();
 
   const clients = new Map<ApiRole, OpenRouter>();
   const keyedClient = (role: "user" | "management"): OpenRouter => {
@@ -136,16 +135,29 @@ export async function createContext(deps: RuntimeDeps, options: RunOptions = {})
     cachePolicy: options.cachePolicy ?? "default",
     timeoutMs,
     meta,
-    memo<T>(key: string, fn: () => Promise<T>): Promise<T> {
-      let pending = memo.get(key) as Promise<T> | undefined;
-      if (!pending) {
-        pending = fn();
-        memo.set(key, pending);
-        pending.catch(() => memo.delete(key));
-      }
-      return pending;
-    },
+    memo: makeMemo(),
   };
+}
+
+function makeMemo(): Ctx["memo"] {
+  const memo = new Map<string, Promise<unknown>>();
+  return <T>(key: string, fn: () => Promise<T>): Promise<T> => {
+    let pending = memo.get(key) as Promise<T> | undefined;
+    if (!pending) {
+      pending = fn();
+      memo.set(key, pending);
+      pending.catch(() => memo.delete(key));
+    }
+    return pending;
+  };
+}
+
+/**
+ * A per-operation view of a long-lived context (the TUI keeps one per profile): SDK clients and
+ * resolved secrets are shared, while meta and memoized lookups start fresh.
+ */
+export function forkContext(ctx: Ctx, overrides: Partial<Pick<Ctx, "cachePolicy">> = {}): Ctx {
+  return { ...ctx, ...overrides, meta: emptyMeta(), memo: makeMemo() };
 }
 
 /** The key reference for a role, or a NO_CREDENTIAL error that names the fix (§6.7). */
