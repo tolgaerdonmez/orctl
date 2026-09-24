@@ -60,10 +60,10 @@ describe("TUI Workspaces (plan §7.3, F8)", () => {
     await ui.press("n");
     await ui.waitFor((x) => x.includes("New workspace"), "form");
     await ui.type("Data Team");
-    let f = await ui.waitFor((x) => x.includes("CLI: orctl workspaces create 'Data Team'"), "hint");
+    await ui.waitFor((x) => x.includes("CLI: orctl workspaces create 'Data Team'"), "hint");
     for (let i = 0; i < 3; i++) await ui.press("ARROW_DOWN");
     await ui.enter();
-    f = await ui.waitFor((x) => x.includes("data-team"), "created");
+    let f = await ui.waitFor((x) => x.includes("data-team"), "created");
     expect(ws.workspaces.map((w) => w.slug)).toContain("data-team");
     await ui.press("G");
     await ui.enter();
