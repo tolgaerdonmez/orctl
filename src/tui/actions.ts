@@ -36,4 +36,10 @@ export const TUI_ACTIONS: TuiAction[] = [
   { op: "keys.enable", screen: "keys", key: "space", label: "Enable a key" },
   { op: "keys.delete", screen: "keys", key: "D", label: "Delete a key (typed name)" },
   { op: "keys.rotate", screen: "keys", key: "r", label: "Rotate a key (wizard)" },
+  {
+    op: "usage.report",
+    screen: "usage",
+    key: "tab / [ ]",
+    label: "Usage by model, provider, day, workspace, key",
+  },
 ];

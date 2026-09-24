@@ -71,6 +71,12 @@ export const PARITY_SAMPLES: Record<string, Array<Record<string, unknown>>> = {
   "keys.disable": [{ ref: "ci-bot" }],
   "keys.enable": [{ ref: "…1c96", workspace: "default" }],
   "keys.delete": [{ ref: "ci-bot", workspace: "research" }],
+  "usage.report": [
+    {},
+    { by: "day", since: "2026-09-01", until: "2026-09-20", workspace: "research" },
+    { by: "provider", days: 7, key: "ci-bot" },
+    { by: "key" },
+  ],
   "keys.rotate": [
     { ref: "ci-bot", store: true },
     { ref: "…1c96", expires: "90d", copy: true, deleteOld: true, verify: false, workspace: "research" },

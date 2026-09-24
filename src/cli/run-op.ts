@@ -68,7 +68,7 @@ function renderView(
   }
   let columns: ReturnType<typeof selectColumns>;
   try {
-    columns = selectColumns(columnsOf(view, now), globals.columns);
+    columns = selectColumns(columnsOf(view, now, result), globals.columns);
   } catch (err) {
     if (err instanceof ColumnError) throw new OrctlError("USAGE", err.message);
     throw err;

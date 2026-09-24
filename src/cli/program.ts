@@ -199,6 +199,7 @@ export function buildProgram(deps: CliDeps, setExit: (code: number) => void, hoo
     models: "Browse models and prices (no key needed)",
     providers: "Inference providers (no key needed)",
     keys: "Manage API keys (management key)",
+    usage: "Spending breakdown (management key)",
   };
   for (const spec of SPECS) {
     const sameParent = (p: readonly string[]) =>
